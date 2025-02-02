@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restaurante El Catracho - Punto de Venta</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../../assets/users/css/compra.css">
+</head>
+
+<body>
+
+    <!-- Menú superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Restaurante El Catracho</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Perfil</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container-fluid p-5">
+        <div class="row">
+            <div class="col-md-4">
+                <h4 class="mb-3">Carrito de Compras</h4>
+                <ul class="list-group cart-list" id="cart"></ul>
+                <div class="mt-3">
+                    <p class="total-price">Total: Q<span id="total">0.00</span></p>
+                    <button class="btn btn-success w-100" onclick="mostrarModal()">Confirmar Pedido</button>
+                </div>
+            </div>
+            <div class="col-md-8 p-5">
+                <h4 class="mb-3">Menú de Productos</h4>
+                <div class="row" id="product-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Total del pedido:</strong> Q<span id="modalTotal"></span></p>
+                    <p><strong>Fecha de creación:</strong> <span id="modalFechaCreacion"></span></p>
+                    <p><strong>Fecha estimada de entrega:</strong> <span id="modalFechaEntrega"></span></p>
+
+                    <label for="metodoPago" class="form-label">Método de pago</label>
+                    <select class="form-select" id="metodoPago">
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                    </select>
+
+                    <label for="direccion" class="form-label">Dirección de entrega</label>
+                    <input type="text" class="form-control" id="direccion" placeholder="Ingrese su dirección">
+
+                    <label for="direccion" class="form-label mt-2">Indicaciones adicionales</label>
+                    <input type="text" class="form-control" id="direccion" placeholder="Ingrese alguna indicación">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="finalizarPedido()">Finalizar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Éxito -->
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pedido Exitoso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-5">Su pedido fue exitoso, gracias por confiar en Donde El Catracho.</p>
+                    <p><strong>No. de Pedido:</strong> <span id="numeroPedido"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        onclick="location.href = 'compra.html'">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const productos = [
+            { id: 1, nombre: "Baleada Sencilla", precio: 15.00 },
+            { id: 2, nombre: "Baleada con Huevo", precio: 20.00 },
+            { id: 3, nombre: "Tajada con Queso", precio: 25.00 },
+            { id: 4, nombre: "Pollo con Tajadas", precio: 40.00 },
+            { id: 5, nombre: "Sopa de Res", precio: 50.00 }
+        ];
+
+        const productList = document.getElementById("product-list");
+        const cart = document.getElementById("cart");
+        const totalElement = document.getElementById("total");
+        let total = 0;
+
+        function cargarProductos() {
+            productos.forEach(producto => {
+                const card = document.createElement("div");
+                card.classList.add("col-6", "mb-3");
+                card.innerHTML = `
+                    <div class="card product-card p-2 text-center" onclick="agregarAlCarrito(${producto.id})">
+                        <h6 class="mt-2">${producto.nombre}</h6>
+                        <p class="text-muted">Q${producto.precio.toFixed(2)}</p>
+                    </div>
+                `;
+                productList.appendChild(card);
+            });
+        }
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                const item = document.createElement("li");
+                item.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+                item.innerHTML = `${producto.nombre} - Q${producto.precio.toFixed(2)}
+                    <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(this, ${producto.precio})">X</button>`;
+                cart.appendChild(item);
+                total += producto.precio;
+                totalElement.textContent = total.toFixed(2);
+            }
+        }
+
+        function mostrarModal() {
+            document.getElementById("modalTotal").textContent = total.toFixed(2);
+            document.getElementById("modalFechaCreacion").textContent = new Date().toLocaleDateString();
+            document.getElementById("modalFechaEntrega").textContent = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString();
+            new bootstrap.Modal(document.getElementById("modalConfirmacion")).show();
+        }
+
+        function finalizarPedido() {
+            document.getElementById("numeroPedido").textContent = Math.floor(100000 + Math.random() * 900000);
+            bootstrap.Modal.getInstance(document.getElementById("modalConfirmacion")).hide();
+            new bootstrap.Modal(document.getElementById("modalExito")).show();
+        }
+
+        cargarProductos();
+    </script>
+
+</body>
+
+</html>
