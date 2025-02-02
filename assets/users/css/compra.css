@@ -7,6 +7,9 @@
 body {
     background-color: #f8f9fa;
 }
+img{
+    margin-right: 10px;
+}
 .product-card {
     cursor: pointer;
     transition: transform 0.2s;
