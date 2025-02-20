@@ -34,7 +34,7 @@
                         <a class="nav-link text-white" href="perfil.html">Perfil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-danger" href="../../common/login.html">Cerrar Sesión</a>
+                        <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
                     </li>
                 </ul>
             </div>
@@ -116,6 +116,13 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/users/js/compra.js"></script>
+    <script>
+        const closeSession = function () {
+            localStorage.removeItem("uuid");
+            sessionStorage.removeItem("authToken");
+            window.location.href = "../../../views/common/login.html";
+        }
+    </script>
 </body>
 
 </html>
