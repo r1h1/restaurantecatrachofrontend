@@ -96,6 +96,6 @@ const changePassword = async () => {
         alert("Contraseña actualizada correctamente.");
         window.location.href = "../../views/common/login.html";
     } catch (error) {
-        alert("Hubo un problema al actualizar la clave.");
+        alert("Hubo un problema al actualizar la clave: " + error);
     }
 };
