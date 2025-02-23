@@ -104,24 +104,15 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <td>1</td>
-                            <td>Jesus Palma</td>
-                            <td>jesupalma9@gmail.com</td>
-                            <td>1</td>
-                            <td>4345683493</td>
-                            <td>
-                                <button class='btn btn-warning btn-sm' onclick='editarUsuario(this)'>Editar</button>
-                                <button class='btn btn-danger btn-sm' onclick='eliminarUsuario(this)'>Eliminar</button>
-                                <button class='btn btn-primary btn-sm' onclick='actualizarContraseña(this)'>Actualizar
-                                    Clave</button>
-                            </td>
-                        </tbody>
+                        <tbody id="usuariosTabla">
+                            <!-- Los datos se llenarán dinámicamente aquí -->
+                        </tbody>                        
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    <script src="../../../business/administrative/users.js"></script>
     <script>
         const closeSession = function () {
             localStorage.removeItem("uuid");
