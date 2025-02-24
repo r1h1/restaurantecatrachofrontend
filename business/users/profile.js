@@ -58,3 +58,5 @@ const getProfile = async () => {
         alert(error);
     }
 };
+
+getProfile();

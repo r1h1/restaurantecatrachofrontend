@@ -63,10 +63,6 @@
                             <input type="email" class="form-control" id="correo" required>
                         </div>
                         <div class="mb-3">
-                            <label for="clave" class="form-label">Clave</label>
-                            <input type="password" class="form-control" id="clave" required>
-                        </div>
-                        <div class="mb-3">
                             <label for="rol" class="form-label">Rol</label>
                             <select class="form-select" id="rol" required>
                                 <option value="1">Administrador</option>
@@ -81,10 +77,14 @@
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <textarea class="form-control" id="direccion" rows="2"></textarea>
+                            <textarea class="form-control" id="direccion" rows="3" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar</button>
+                        <div class="mb-3">
+                            <label for="clave" class="form-label">Clave</label>
+                            <input type="text" class="form-control" id="clave">
+                        </div>
+                        <a class="btn btn-primary" onclick="saveButtonOptions()">Guardar</a>
+                        <a class="btn btn-secondary" onclick="resetData()">Limpiar</a>
                     </form>
                 </div>
             </div>
@@ -96,7 +96,7 @@
                     <table class="table table-striped" id="usuariosTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Nombre</th>
                                 <th>Correo</th>
                                 <th>Rol</th>
@@ -106,7 +106,7 @@
                         </thead>
                         <tbody id="usuariosTabla">
                             <!-- Los datos se llenarán dinámicamente aquí -->
-                        </tbody>                        
+                        </tbody>
                     </table>
                 </div>
             </div>
