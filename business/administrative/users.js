@@ -86,6 +86,7 @@ const decodificarBase64 = (textoBase64) => {
 // Función para traer datos de usuario logueado y llenar la tabla
 const getUsers = async () => {
     try {
+        document.getElementById('clave').disabled = false;
         const data = await makeRequestGetDelete(fullApiUrl, "GET");
 
         if (data) {
@@ -116,7 +117,6 @@ const getUsers = async () => {
                                                 "${decodificarBase64(usuario.direccion).replace(/"/g, '&quot;')}"
                                             )'>Editar</button>
                                         <button class='btn btn-danger btn-sm' onclick='userDelete(${usuario.id_usuario})'>Eliminar</button>
-                                        <button class='btn btn-primary btn-sm' onclick='actualizarContraseña(${usuario.id_usuario})'>Actualizar Clave</button>
                                     </td>
                                 `;
                 // Agregar la fila al tbody
@@ -158,6 +158,7 @@ const userEdit = function (id_usuario, nombre, correo, rol, telefono, direccion)
     document.getElementById('rol').value = rol;
     document.getElementById('telefono').value = telefono;
     document.getElementById('direccion').value = direccion;
+    document.getElementById('clave').disabled = true;
 }
 
 // Función para traer datos de usuario logueado y llenar la tabla
