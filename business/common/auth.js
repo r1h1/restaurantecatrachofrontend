@@ -52,7 +52,7 @@ const authFunction = async () => {
             const role = payload.role;
 
             // Redirigir según el rol
-            if (role === "1") {
+            if (role === "1" || role === "3") {
                 window.location.href = "../../views/administrative/dashboard.html";
             } else {
                 window.location.href = "../../views/users/modules/compra.html";

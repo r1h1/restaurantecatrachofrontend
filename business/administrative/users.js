@@ -277,6 +277,7 @@ const resetData = function(){
     document.getElementById('telefono').value = "";
     document.getElementById('direccion').value = "";
     document.getElementById('clave').value = "";
+    document.getElementById('clave').disabled = false;
 }
 
 
