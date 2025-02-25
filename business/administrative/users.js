@@ -3,6 +3,20 @@ const baseUrl = "https://elcatrachorestaurantes.somee.com";
 const fullApiUrl = `${baseUrl}/api/Usuarios`;
 
 
+//Funcion para chequear el token, si no, no permite ver la página
+const isTokenExist = function(){
+    const token = sessionStorage.getItem("authToken");
+    const userInfo = localStorage.getItem("uuid");
+
+    if(!token || !userInfo){
+        window.location.href = '../../../views/common/login.html';
+    }
+    else{
+        return;
+    }
+}
+
+
 // Función Reutilizable para Fetch (GET, DELETE)
 const makeRequestGetDelete = async (url, method) => {
     const myHeaders = new Headers();
@@ -13,7 +27,6 @@ const makeRequestGetDelete = async (url, method) => {
 
     // Agrega el token al encabezado Authorization si existe
     if (!token) {
-        alert('No se procesó la solicitud, por favor, vuelve a loguearte');
         return;
     }
 
@@ -103,9 +116,10 @@ const getUsers = async () => {
                                     <td>${decodificarBase64(usuario.nombre)}</td>
                                     <td>${decodificarBase64(usuario.correo)}</td>
                                     <td>${decodificarBase64(usuario.rol) == 1 ? 'Administrador' :
-                        decodificarBase64(usuario.rol) == 2 ? 'Gerente' :
-                            decodificarBase64(usuario.rol) == 3 ? 'Empleado' : 'Cliente'}</td>
+                                        decodificarBase64(usuario.rol) == 2 ? 'Gerente' :
+                                        decodificarBase64(usuario.rol) == 3 ? 'Empleado' : 'Cliente'}</td>
                                     <td>${decodificarBase64(usuario.telefono)}</td>
+                                    <td>${decodificarBase64(usuario.direccion)}</td>
                                     <td>
                                         <button class='btn btn-warning btn-sm' 
                                             onclick='userEdit(
@@ -281,4 +295,5 @@ const resetData = function(){
 }
 
 
+isTokenExist();
 getUsers();

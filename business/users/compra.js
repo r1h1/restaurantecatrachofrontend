@@ -7,6 +7,19 @@ const productos = [
     { id: 5, nombre: "Sopa de Res", precio: 50.00 }
 ];
 
+//Funcion para chequear el token, si no, no permite ver la página
+const isTokenExist = function(){
+    const token = sessionStorage.getItem("authToken");
+    const userInfo = localStorage.getItem("uuid");
+
+    if(!token || !userInfo){
+        window.location.href = '../../../views/common/login.html';
+    }
+    else{
+        return;
+    }
+}
+
 // Elementos del DOM
 const productList = document.getElementById("product-list");
 const cart = document.getElementById("cart");
@@ -120,3 +133,4 @@ const refrescarPantalla = function () {
 
 // Inicializar la carga de productos
 cargarProductos();
+isTokenExist();

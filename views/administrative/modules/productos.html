@@ -76,15 +76,15 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar</button>
+                        <a class="btn btn-primary" onclick="saveButtonOptions()">Guardar</a>
+                        <a class="btn btn-secondary" onclick="resetData()">Limpiar</a>
                     </form>
                 </div>
             </div>
 
             <!-- Tabla de Productos -->
             <div class="col-md-7">
-                <div class="p-4 border rounded bg-light">
+                <div class="p-4 border rounded bg-light table-responsiv">
                     <h4>Lista de Productos</h4>
                     <table class="table table-striped" id="productosTable">
                         <thead>
@@ -98,25 +98,15 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Baleada</td>
-                                <td>Tortilla con frijoles y queso</td>
-                                <td>25.00</td>
-                                <td>Desayuno</td>
-                                <td>Sí</td>
-                                <td>
-                                    <button class='btn btn-warning btn-sm' onclick='editarProducto(this)'>Editar</button>
-                                    <button class='btn btn-danger btn-sm' onclick='eliminarProducto(this)'>Eliminar</button>
-                                </td>
-                            </tr>
+                        <tbody id="productosTabla">
+                            
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    <script src="../../../business/administrative/products.js"></script>
     <script>
         const closeSession = function () {
             localStorage.removeItem("uuid");

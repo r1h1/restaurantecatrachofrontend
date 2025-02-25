@@ -2,6 +2,21 @@
 const baseUrl = "https://elcatrachorestaurantes.somee.com";
 const fullApiUrl = `${baseUrl}/api/Usuarios`;
 
+
+//Funcion para chequear el token, si no, no permite ver la página
+const isTokenExist = function(){
+    const token = sessionStorage.getItem("authToken");
+    const userInfo = localStorage.getItem("uuid");
+
+    if(!token || !userInfo){
+        window.location.href = '../../../views/common/login.html';
+    }
+    else{
+        return;
+    }
+}
+
+
 // Función Reutilizable para Fetch (GET)
 const makeRequest = async (url, method) => {
     const myHeaders = new Headers();
@@ -59,4 +74,5 @@ const getProfile = async () => {
     }
 };
 
+isTokenExist();
 getProfile();
