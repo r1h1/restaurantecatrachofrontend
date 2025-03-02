@@ -237,9 +237,8 @@ const resetData = function(){
     document.getElementById('descripcion').value = "";
     document.getElementById('precio').value = "";
     document.getElementById('categoria').value = "";
-    document.getElementById('disponible').checked = false;
+    document.getElementById('disponible').checked = true;
 };
 
 
 getProducts();
-isTokenExist();
