@@ -17,6 +17,14 @@ const isTokenExist = function(){
 }
 
 
+//Funcion para cerrar sesión
+const closeSession = function () {
+    localStorage.removeItem("uuid");
+    sessionStorage.removeItem("authToken");
+    window.location.href = "../../../views/common/login.html";
+}
+
+
 // Función Reutilizable para Fetch (GET)
 const makeRequest = async (url, method) => {
     const myHeaders = new Headers();

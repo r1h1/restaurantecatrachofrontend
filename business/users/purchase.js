@@ -6,7 +6,7 @@ const fullApiUrlProductos = `${baseUrl}/api/Productos`;
 let total = 0;
 let carritoCompras = [];
 
-//Funcion para cheuear el token, si no, no permite ver la página
+//Funcion para ver el token, si no, no permite ver la página
 const isTokenExist = function () {
     const token = sessionStorage.getItem("authToken");
     const userInfo = localStorage.getItem("uuid");
@@ -14,6 +14,19 @@ const isTokenExist = function () {
     if (!token || !userInfo) {
         window.location.href = '../../../views/common/login.html';
     }
+}
+
+//Funcion para cerrar sesión
+const closeSession = function () {
+    localStorage.removeItem("uuid");
+    sessionStorage.removeItem("authToken");
+    localStorage.removeItem("ultimoPedido");
+    // Reiniciar el carrito
+    carritoCompras = [];
+    document.getElementById("cart").innerHTML = "";
+    total = 0;
+    document.getElementById("total").textContent = "0.00";
+    window.location.href = "../../../views/common/login.html";
 }
 
 // Función Reutilizable para Fetch (GET, DELETE)
