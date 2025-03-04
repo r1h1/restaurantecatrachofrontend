@@ -47,69 +47,49 @@
     <!-- Contenedor de contenido dinámico -->
     <div class="container-fluid">
         <div class="row mt-4">
-            <!-- Formulario de Pedidos -->
-            <div class="col-md-5">
-                <div class="p-4 border rounded bg-light">
-                    <h4>Registrar Pedido</h4>
-                    <form id="pedidoForm">
-                        <input type="hidden" id="id_pedido">
-                        <div class="mb-3">
-                            <label for="id_usuario" class="form-label">ID Usuario</label>
-                            <input type="number" class="form-control" id="id_usuario" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estado" class="form-label">Estado</label>
-                            <select class="form-select" id="estado" required>
-                                <option value="1">Pendiente</option>
-                                <option value="2">En Proceso</option>
-                                <option value="3">Enviado</option>
-                                <option value="4">Entregado</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fecha_entrega_estimada" class="form-label">Fecha Estimada de Entrega</label>
-                            <input type="datetime-local" class="form-control" id="fecha_entrega_estimada">
-                        </div>
-                        <div class="mb-3">
-                            <label for="monto_total" class="form-label">Monto Total</label>
-                            <input type="number" class="form-control" id="monto_total" step="0.01" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar Pedido</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    </form>
-                </div>
-            </div>
-
             <!-- Tabla de Pedidos -->
-            <div class="col-md-7">
-                <div class="p-4 border rounded bg-light table-responsiv">
+            <div class="col-md-6">
+                <div class="p-4 border rounded bg-light table-responsive">
                     <h4>Lista de Pedidos</h4>
                     <table class="table table-striped" id="pedidosTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>ID Usuario</th>
+                                <th>#</th>
                                 <th>Estado</th>
+                                <th>Usuario</th>
                                 <th>Fecha Creación</th>
                                 <th>Fecha Entrega</th>
                                 <th>Monto Total</th>
+                                <th>Dirección</th>
+                                <th>Indicaciones</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
+                                <td>
+                                    <select class="form-select" id="estadoPedido" required>
+                                        <option value="0" selected>Seleccione...</option>
+                                        <option value="1">Creado</option>
+                                        <option value="3">En proceso</option>
+                                        <option value="4">Enviado</option>
+                                        <option value="5">Pagado</option>
+                                        <option value="6">Finalizado</option>
+                                    </select>
+                                </td>
                                 <td>3</td>
-                                <td>Pendiente</td>
-                                <td>2025-02-03</td>
-                                <td>2025-02-05</td>
+                                <td>04/03/2025</td>
+                                <td><input type="date" class="form-control"></td>
                                 <td>500.00</td>
+                                <td>Pagado</td>
+                                <td>Pagado</td>
                                 <td>
                                     <button class='btn btn-warning btn-sm' onclick='editarPedido(this)'>Editar</button>
                                     <button class='btn btn-danger btn-sm'
                                         onclick='eliminarPedido(this)'>Eliminar</button>
-                                    <button class='btn btn-primary btn-sm'
-                                        onclick='eliminarPedido(this)'>Pagar</button>
+                                    <button class='btn btn-success btn-sm'
+                                        onclick='eliminarPedido(this)'>Detalle</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -117,66 +97,28 @@
                 </div>
             </div>
 
-            <!-- Formulario de Pagos -->
-            <div class="col-md-5 mt-4">
-                <div class="p-4 border rounded bg-light">
-                    <h4>Registrar Pago</h4>
-                    <form id="pagoForm">
-                        <input type="hidden" id="id_pago">
-                        <div class="mb-3">
-                            <label for="id_pedido_pago" class="form-label">ID Pedido</label>
-                            <input type="number" class="form-control" id="id_pedido_pago" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="monto" class="form-label">Monto</label>
-                            <input type="number" class="form-control" id="monto" step="0.01" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="metodo_pago" class="form-label">Método de Pago</label>
-                            <select class="form-select" id="metodo_pago" required>
-                                <option value="1">Efectivo</option>
-                                <option value="2">Tarjeta</option>
-                                <option value="3">Transferencia</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="estado_pago" class="form-label">Estado de Pago</label>
-                            <select class="form-select" id="estado_pago" required>
-                                <option value="1">Pendiente</option>
-                                <option value="2">Pagado</option>
-                                <option value="3">Rechazado</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success">Guardar Pago</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    </form>
-                </div>
-            </div>
-
             <!-- Tabla de Pagos -->
-            <div class="col-md-7 mt-4">
-                <div class="p-4 border rounded bg-light">
+            <div class="col-md-6">
+                <div class="p-4 border rounded bg-light table-responsive">
                     <h4>Lista de Pagos</h4>
                     <table class="table table-striped" id="pagosTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>ID Pedido</th>
+                                <th>#</th>
+                                <th>No. Pedido</th>
                                 <th>Monto</th>
                                 <th>Método de Pago</th>
                                 <th>Fecha Pago</th>
-                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>1</td>
+                                <td>34534438</td>
                                 <td>500.00</td>
                                 <td>Efectivo</td>
                                 <td>2025-02-03</td>
-                                <td>Pagado</td>
                                 <td>
                                     <button class='btn btn-danger btn-sm' onclick='eliminarPago(this)'>Eliminar</button>
                                 </td>
