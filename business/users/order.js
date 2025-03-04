@@ -115,7 +115,7 @@ const finalizarPedido = function () {
     // Guardar el pedido en LocalStorage
     localStorage.setItem("ultimoPedido", JSON.stringify(pedido));
 
-    if(!localStorage.getItem("ultimoPedido")){
+    if (!localStorage.getItem("ultimoPedido")) {
         alert('No se procedió con el pedido, no existe un pedido en cola.');
     }
 
@@ -125,35 +125,44 @@ const finalizarPedido = function () {
 
 // Función para insertar el pedido y sus detalles en una transacción simulada
 const orderCreated = async () => {
-    const pedido = JSON.parse(localStorage.getItem("ultimoPedido"));
-    const encodedUserId = localStorage.getItem("uuid"); // Obtener el ID en base64
+    const pedidoJson = localStorage.getItem("ultimoPedido");
 
-    if (!pedido) {
+    if (!pedidoJson) {
         alert('Necesitas hacer un pedido para continuar, no se encontró ningún pedido en cola.');
         return;
     }
 
+    let pedido;
+    try {
+        pedido = JSON.parse(pedidoJson);
+        if (!pedido || !pedido.numeroPedido || !pedido.fechaEntrega || !pedido.total) {
+            alert('El pedido almacenado es inválido.');
+            return;
+        }
+    } catch (error) {
+        alert('Error al procesar el pedido desde localStorage.');
+        return;
+    }
+
+    const encodedUserId = localStorage.getItem("uuid"); // Obtener el ID en base64
     if (!encodedUserId) {
         alert('No se encontró un usuario válido logueado en el sistema, verifique.');
         return;
     }
 
     try {
-        // Decodificar el ID de usuario almacenado en base64
         const idUsuario = parseInt(atob(encodedUserId)); // Convertir a número
 
-        // Construcción del objeto para insertar el pedido
         const pedidoBody = {
-            idPedido: 0, // ID en 0 como se solicita
-            idUsuario: idUsuario, // ID del usuario decodificado
-            numeroPedido: pedido.numeroPedido.toString(), // Convertir a string
-            estado: "1", // Estado predeterminado
-            fechaCreacion: new Date().toISOString(), // Fecha actual en formato ISO
-            fechaEntregaEstimada: new Date(pedido.fechaEntrega).toISOString(), // Convertir fecha a ISO
-            montoTotal: parseFloat(pedido.total) // Convertir el total a número
+            idPedido: 0,
+            idUsuario: idUsuario,
+            numeroPedido: pedido.numeroPedido.toString(),
+            estado: "1",
+            fechaCreacion: new Date().toISOString(),
+            fechaEntregaEstimada: new Date(pedido.fechaEntrega).toISOString(),
+            montoTotal: parseFloat(pedido.total)
         };
 
-        // Llamada a la API para insertar el pedido
         const pedidoData = await makeRequestPostPutOrder(fullApiUrlPedidos, "POST", pedidoBody);
 
         if (!pedidoData.isSuccess) {
@@ -161,24 +170,23 @@ const orderCreated = async () => {
             return;
         }
 
-        const idPedido = pedidoData.idPedido; // Obtener el ID del pedido insertado
+        const idPedido = pedidoData.id_pedido;
 
-        // Ahora intenta insertar los detalles del pedido
         const detallesExitosos = await insertOrderDetails(pedido, idPedido);
 
         if (!detallesExitosos) {
-            // Si los detalles fallaron, eliminar el pedido insertado
             await makeReuestGetDeleteOrder(`${fullApiUrlPedidos}/${idPedido}`, "DELETE", {});
             alert("No se pudo crear el detalle del pedido, el pedido ha sido eliminado.");
             return;
         }
 
-        successModal(); // Mostrar modal de éxito
-
+        successModal(pedido.numeroPedido.toString());
     } catch (error) {
-        alert("Error al insertar el pedido: " + error);
+        console.error("Error al insertar el pedido:", error);
+        alert("Error al insertar el pedido. Revisa la consola para más detalles.");
     }
 };
+
 
 // Función para insertar los detalles del pedido
 const insertOrderDetails = async (pedido, idPedido) => {
@@ -191,8 +199,6 @@ const insertOrderDetails = async (pedido, idPedido) => {
             }
             return acc;
         }, {});
-
-        console.log("Productos agrupados:", groupedProducts);
 
         let allSuccess = true;
 
@@ -208,8 +214,6 @@ const insertOrderDetails = async (pedido, idPedido) => {
                 precioUnitario: parseFloat(producto.precio) // Convertir precio a número
             };
 
-            console.log("Enviando detalle:", detalleBody);
-
             const detalleData = await makeRequestPostPutOrder(fullApiUrlDetallesPedido, "POST", detalleBody);
 
             if (!detalleData.isSuccess) {
@@ -217,9 +221,7 @@ const insertOrderDetails = async (pedido, idPedido) => {
                 allSuccess = false; // No detener el proceso, pero marcarlo como fallo
             }
         }
-
         return allSuccess; // Retornar si al menos un detalle falló
-
     } catch (error) {
         console.error("Error al insertar los detalles del pedido:", error);
         return false;
@@ -227,13 +229,12 @@ const insertOrderDetails = async (pedido, idPedido) => {
 };
 
 //Funcion para confirmar que el pedido fue exitoso
-const successModal = function () {
+const successModal = function (numeroPedido) {
     // Cerrar modal de confirmación
     const modalConfirmacion = bootstrap.Modal.getInstance(document.getElementById("modalConfirmacion"));
     modalConfirmacion.hide();
-
     // Mostrar modal de éxito
-    document.getElementById("numeroPedido").textContent = pedido.numeroPedido;
+    document.getElementById("numeroPedido").textContent = numeroPedido;
     const modalExito = new bootstrap.Modal(document.getElementById("modalExito"));
     modalExito.show();
     reset();
@@ -248,4 +249,6 @@ const reset = function () {
     document.getElementById("cart").innerHTML = "";
     total = 0;
     document.getElementById("total").textContent = "0.00";
+    document.getElementById("direccion").value = "";
+    document.getElementById("indicaciones").value = "";
 };
