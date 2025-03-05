@@ -33,15 +33,12 @@
     <!-- Contenedor de contenido dinámico -->
     <div class="container-fluid p-5">
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div id="contenido" class="p-4 border rounded bg-light">
                     <h4>Bienvenido al Panel Administrativo</h4>
                     <p>Seleccione una opción del menú para gestionar los datos. <br>
                         Gracias por confiar en Donde el catracho, las mejores comidas.</p>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <canvas id="pedidosChart"></canvas>
             </div>
         </div>
     </div>
@@ -50,31 +47,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../business/administrative/dashboard.js"></script>
     <script>
-
-        function cargarGraficoPedidos() {
-            const ctx = document.getElementById('pedidosChart').getContext('2d');
-            const pedidosChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pendientes', 'Finalizados'],
-                    datasets: [{
-                        label: 'Pedidos',
-                        data: [10, 20], // Datos de ejemplo, reemplázalos con datos dinámicos
-                        backgroundColor: ['#ffcc00', '#28a745'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
-
-        window.onload = function () {
-            cargarGraficoPedidos();
-        }
-
         const closeSession = function () {
             localStorage.removeItem("uuid");
             sessionStorage.removeItem("authToken");

@@ -49,18 +49,21 @@
         <!-- Input para ingresar el número de pedido -->
         <div class="input-group mb-3 w-50">
             <input type="text" class="form-control" id="numeroPedidoInput" placeholder="Ingrese su número de pedido">
-            <button class="btn btn-success">Buscar</button>
+            <a class="btn btn-success" onclick="getOrderByOrderNumber()">Buscar</a>
+            <a class="btn btn-warning" href="./tracking_order.html">Limpiar Busqueda</a>
         </div>
 
         <!-- Contenedor para mostrar la tarjeta del pedido -->
         <div id="pedidoInfo" class="w-50">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Pedido #<span id="pedidoNumero"></span></h5>
-                    <p class="card-text"><strong>Estado:</strong> <span id="pedidoEstado" class="btn btn-info">EN ESPERA</span></p>
-                    <p class="card-text"><strong>Fecha de Creación:</strong> <span id="pedidoFecha"></span></p>
-                    <p class="card-text"><strong>Fecha Estimada de Entrega:</strong> <span id="pedidoEntrega"></span></p>
-                    <p class="card-text"><strong>Total:</strong> Q<span id="pedidoTotal"></span></p>
+                    <h5 class="card-title mb-4">Pedido #<span id="pedidoNumero">0</span></h5>
+                    <p class="card-text"><strong>Estado:</strong> <span id="pedidoEstado" class="bg-light px-5 py-1">N/A</span></p>
+                    <p class="card-text"><strong>Fecha de Creación:</strong> <span id="pedidoFecha">N/A</span></p>
+                    <p class="card-text"><strong>Fecha Estimada de Entrega:</strong> <span id="pedidoEntrega">N/A</span></p>
+                    <p class="card-text"><strong>Total:</strong> Q<span id="pedidoTotal">0.00</span></p>
+                    <p class="card-text"><strong>Dirección proporcionada:</strong> <span id="direccion">N/A</span></p>
+                    <p class="card-text"><strong>Número de teléfono:</strong> <span id="indicaciones">N/A</span></p>
                 </div>
             </div>
         </div>
@@ -68,6 +71,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../business/users/tracking_order.js"></script>
 </body>
 
 </html>

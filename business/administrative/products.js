@@ -177,6 +177,12 @@ const getProducts = async () => {
 // Función para borrar producto de base de datos
 const productDelete = async (idProducto) => {
     try {
+        const confirmDelete = confirm("¿Estás seguro de que deseas eliminar?");
+
+        if (!confirmDelete) {
+            return; // Si el usuario cancela, no se ejecuta el DELETE
+        }
+        
         const data = await makeRequestGetDelete(`${fullApiUrl}/${idProducto}`, "DELETE");
 
         if (data.isSuccess === true) {

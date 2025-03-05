@@ -205,6 +205,12 @@ const getUsers = async () => {
 // Función para borrar usuario de base de datos
 const userDelete = async (id_usuario) => {
     try {
+        const confirmDelete = confirm("¿Estás seguro de que deseas eliminar?");
+
+        if (!confirmDelete) {
+            return; // Si el usuario cancela, no se ejecuta el DELETE
+        }
+
         const data = await makeRequestGetDelete(fullApiUrl + '/' + id_usuario, "DELETE");
 
         if (data.isSuccess === true) {

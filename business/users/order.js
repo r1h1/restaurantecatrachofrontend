@@ -87,6 +87,7 @@ const mostrarModal = function () {
     modal.show();
 };
 
+
 // Función para finalizar el pedido y guardarlo en LocalStorage
 const finalizarPedido = function () {
     const direccionEntrega = document.getElementById("direccion").value.trim();

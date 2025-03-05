@@ -3,7 +3,6 @@ const baseUrl = "https://elcatrachorestaurantes.somee.com";
 const fullApiUrlPedidos = `${baseUrl}/api/Pedidos`;
 const fullApiUrlDetallesPedido = `${baseUrl}/api/DetallesPedido`;
 
-
 // Función para chequear el token, si no, no permite ver la página
 const isTokenExist = function () {
     const token = sessionStorage.getItem("authToken");
@@ -15,10 +14,13 @@ const isTokenExist = function () {
 }
 
 //Funcion para mostrar menu
-//Funcion para mostrar menu
 const printMenu = function () {
     // Obtiene el token
     const token = sessionStorage.getItem("authToken");
+
+    if (!token) {
+        isTokenExist();
+    }
 
     // Decodificar el token para obtener el rol
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -72,6 +74,7 @@ const printMenu = function () {
     }
 }
 printMenu();
+
 // Función Reutilizable para Fetch (GET, DELETE)
 const makeRequestGetDelete = async (url, method) => {
     const myHeaders = new Headers();
@@ -139,51 +142,53 @@ const getOrders = async () => {
         const data = await makeRequestGetDelete(fullApiUrlPedidos, "GET");
 
         if (data) {
+            // Destruir DataTables antes de modificar la tabla para evitar problemas
+            if ($.fn.DataTable.isDataTable("#pedidosTable")) {
+                $("#pedidosTable").DataTable().destroy();
+            }
+
             const tbody = document.getElementById("pedidosTabla");
-            tbody.innerHTML = ""; // Limpiar el contenido existente
+            tbody.innerHTML = ""; // Limpiar contenido antes de agregar nuevos datos
 
             data.forEach((pedido, index) => {
                 const fila = document.createElement("tr");
-                const originalDate = pedido.fechaEntregaEstimada;
 
-                // Convertir la cadena a un objeto Date
-                const dateObj = new Date(originalDate);
-
-                // Obtener los componentes de la fecha
-                const year = dateObj.getFullYear();
-                const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Meses en JS van de 0 a 11
-                const day = String(dateObj.getDate()).padStart(2, "0");
-                const hours = String(dateObj.getHours()).padStart(2, "0");
-                const minutes = String(dateObj.getMinutes()).padStart(2, "0");
-
-                // Formato compatible con datetime-local (YYYY-MM-DDTHH:MM)
-                const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+                const estadoOptions = {
+                    "1": "Creado",
+                    "2": "En Proceso",
+                    "3": "Enviado",
+                    "4": "Finalizado"
+                };
 
                 fila.innerHTML = `
-                                    <td>${index + 1}</td>
-                                    <td>
-                                        <select class="form-select" id="estadoPedido" required>
-                                            <option value="1">Creado</option>
-                                            <option value="2">Pagado</option>
-                                            <option value="3">Enviado</option>
-                                            <option value="4">Finalizado</option>
-                                        </select>
-                                    </td>
-                                    <td>${pedido.numeroPedido}</td>
-                                    <td>${pedido.fechaCreacion}</td>
-                                    <td><input type="datetime-local" class="form-control" value="${formattedDate}"></td>
-                                    <td>Q<span id="montoTotal">${pedido.montoTotal}</span></td>
-                                    <td>${pedido.direccion}</td>
-                                    <td>${pedido.indicaciones}</td>
-                                    <td>
-                                        <button class='btn btn-success btn-sm'
-                                            onclick='productDetailInfo("${pedido.numeroPedido}",${pedido.idPedido})'>Detalle</button>
-                                        <button class='btn btn-danger btn-sm'
-                                            onclick='eliminarPedido(this)'>Eliminar</button>
-                                    </td>
+                    <td>
+                        <select class="form-select" id="estadoPedido-${pedido.idPedido}" 
+                            onchange="changeStatus(this)" required 
+                            style="width: 140px;">
+                            ${Object.entries(estadoOptions)
+                        .map(([value, text]) =>
+                            `<option value="${value}" ${pedido.estado == value ? "selected" : ""}>${text}</option>`
+                        ).join("")}
+                        </select>
+                    </td>
+                    <td>${pedido.numeroPedido}</td>
+                    <td>${pedido.fechaCreacion}</td>
+                    <td>${pedido.fechaEntregaEstimada}</td>
+                    <td>Q<span class="montoTotal">${pedido.montoTotal}</span></td>
+                    <td>${pedido.direccion}</td>
+                    <td>${pedido.indicaciones}</td>
+                    <td>
+                        <button class='btn btn-success btn-sm'
+                            onclick='productDetailInfo("${pedido.numeroPedido}",${pedido.idPedido})'>Detalle</button>
+                        <button class='btn btn-danger btn-sm'
+                            onclick='deleteOrder(${pedido.idPedido})'>Eliminar</button>
+                    </td>
                 `;
                 tbody.appendChild(fila);
             });
+
+            // Inicializar DataTables después de poblar la tabla
+            initializeDataTable();
         } else {
             console.log("No hay datos de pedidos.");
         }
@@ -191,6 +196,72 @@ const getOrders = async () => {
         alert(error);
     }
 };
+
+// Función para cambiar estado de pedido y obtener toda la fila
+const changeStatus = async (selectElement) => {
+    const fila = selectElement.closest("tr"); // Obtener la fila completa
+    const idPedido = selectElement.id.split("-")[1]; // Extraer el ID del pedido
+    const estado = selectElement.value;
+
+    // Obtener datos de la fila
+    const numeroPedido = fila.cells[2].textContent;
+    const fechaCreacion = fila.cells[3].textContent;
+    const fechaEntregaEstimada = fila.cells[4].textContent;
+    const montoTotal = fila.querySelector(".montoTotal").textContent;
+    const direccion = fila.cells[6].textContent;
+    const indicaciones = fila.cells[7].textContent;
+
+    try {
+        const body = {
+            idPedido,
+            estado,
+            numeroPedido,
+            fechaCreacion,
+            fechaEntregaEstimada,
+            montoTotal,
+            direccion,
+            indicaciones
+        };
+
+        const response = await makeRequestPostPut(fullApiUrlPedidos, "PUT", body);
+
+        if (response.isSuccess === true) {
+            alert("Estado del pedido actualizado con éxito");
+            getOrders();
+        } else {
+            alert("No se pudo actualizar el estado del pedido, verifique de nuevo");
+            getOrders();
+        }
+    } catch (error) {
+        alert("Error al actualizar el estado del pedido: " + error);
+    }
+};
+
+
+// Función para borrar pedido de base de datos
+const deleteOrder = async (id_pedido) => {
+    try {
+        const confirmDelete = confirm("¿Estás seguro de que deseas eliminar?");
+
+        if (!confirmDelete) {
+            return; // Si el usuario cancela, no se ejecuta el DELETE
+        }
+
+        const data = await makeRequestGetDelete(fullApiUrlPedidos + '/' + id_pedido, "DELETE");
+
+        if (data.isSuccess === true) {
+            alert('Eliminado con éxito');
+            getOrders(); // Refrescar la lista de pedidos
+        } else {
+            alert('No se pudo eliminar, verifique nuevamente');
+            getOrders();
+        }
+    } catch (error) {
+        alert("Error al eliminar el pedido: " + error);
+    }
+};
+
+
 
 // Función para mostrar el modal de confirmación de pedido
 const productDetailInfo = async (numeroPedido, idPedido) => {
@@ -223,6 +294,20 @@ const productDetailInfo = async (numeroPedido, idPedido) => {
         alert('No se pudo mostrar el detalle del pedido ' + numeroPedido + ': ' + error);
     }
 };
+
+const initializeDataTable = () => {
+    $("#pedidosTable").DataTable({
+        destroy: true, // Permite reinicializar la tabla sin errores
+        responsive: true, // Hace la tabla adaptable a dispositivos móviles
+        pageLength: 10, // Cantidad de filas por página
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]], // Opciones de cantidad de filas
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" // Traducción al español
+        },
+        order: [[2, "desc"]] // Ordenar por número de pedido (columna índice 2) en orden descendente
+    });
+};
+
 
 isTokenExist();
 printMenu();

@@ -63,7 +63,7 @@ const cargarProductos = async () => {
     const productList = document.getElementById("product-list");
     try {
         const productos = await makeReuestGetDelete(fullApiUrlProductos, "GET");
-        if (productos) {
+        if (productos.length > 0) {  // Se corrige "lenght" por "length"
             productList.innerHTML = ""; // Limpiar la lista antes de cargar productos
 
             productos.forEach(producto => {
@@ -78,11 +78,19 @@ const cargarProductos = async () => {
                 productList.appendChild(card);
             });
         } else {
-            console.log("No hay productos disponibles.");
+            productList.innerHTML = ""; // Limpiar la lista antes de cargar productos
+            const card = document.createElement("div");
+            card.classList.add("col-12", "mb-3");
+            card.innerHTML = `
+                    <div class="card p-2 text-center">
+                        <h6 class="mt-2">-- NO HAY PRODUCTOS DISPONIBLES --</h6>
+                        <p class="text-muted">Vuelve pronto, gracias por confiar en Donde El Catracho</p>
+                    </div>
+                `;
+            productList.appendChild(card);
         }
     } catch (error) {
-        console.error("Error al obtener productos:", error);
-        alert("Error al cargar los productos.");
+        alert("Error al cargar los productos: " + error);
     }
 };
 
