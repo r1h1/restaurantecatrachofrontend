@@ -201,28 +201,29 @@ const getOrders = async () => {
 const changeStatus = async (selectElement) => {
     const fila = selectElement.closest("tr");
     const idPedido = parseInt(selectElement.id.split("-")[1]);
-    const estado = parseInt(selectElement.value);
-
-    const numeroPedido = fila.cells[1].textContent.trim();  // Corregido: antes estaba tomando una fecha
+    const estado = selectElement.value; // Convertirlo directamente a string
+    const idUsuario = atob(localStorage.getItem("uuid"));
+    const numeroPedido = fila.cells[1].textContent.trim();
     const fechaCreacion = fila.cells[2].textContent.trim();
     let fechaEntregaEstimada = fila.cells[3].textContent.trim();
     let montoTotal = fila.querySelector(".montoTotal").textContent.trim();
     const direccion = fila.cells[5].textContent.trim();
     let indicaciones = fila.cells[6].textContent.trim();
 
-    // Validar fechaEntregaEstimada
-    fechaEntregaEstimada = fechaEntregaEstimada ? new Date(fechaEntregaEstimada).toISOString() : null;
+    // Convertir fechaEntregaEstimada a formato ISO 8601 o cadena vacía si no existe
+    fechaEntregaEstimada = fechaEntregaEstimada ? new Date(fechaEntregaEstimada).toISOString() : "";
 
     // Convertir montoTotal a número
     montoTotal = parseFloat(montoTotal.replace("Q", "").trim());
 
     // Limpiar indicaciones
-    indicaciones = indicaciones.replace(/\s+/g, " ").trim(); 
+    indicaciones = indicaciones.replace(/\s+/g, " ").trim();
 
     try {
         const body = {
             idPedido,
-            estado,
+            idUsuario, // Este campo es obligatorio según la API
+            estado, // Ahora es un string
             numeroPedido,
             fechaCreacion,
             fechaEntregaEstimada,
