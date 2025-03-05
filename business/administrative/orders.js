@@ -322,6 +322,8 @@ const initializeDataTable = () => {
 };
 
 
-isTokenExist();
-printMenu();
-getOrders();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+    printMenu();
+    getOrders();
+});
