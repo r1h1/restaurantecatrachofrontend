@@ -38,7 +38,7 @@ const printMenu = function () {
                                         <a class="nav-link text-white" href="modules/usuarios.html">Usuarios</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/pedidos.html">pedidos</a>
+                                        <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
