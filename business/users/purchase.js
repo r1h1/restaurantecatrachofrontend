@@ -136,5 +136,7 @@ const eliminarDelCarrito = function (elemento, precio, id) {
 
 
 // Inicializar la carga de productos
-cargarProductos();
-isTokenExist();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+    cargarProductos();
+});

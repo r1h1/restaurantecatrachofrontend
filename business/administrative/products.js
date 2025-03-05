@@ -306,6 +306,8 @@ const resetData = function(){
 };
 
 
-getProducts();
-printMenu();
-isTokenExist();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+    printMenu();
+    getProducts();
+});

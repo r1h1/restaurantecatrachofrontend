@@ -4,14 +4,14 @@ const fullApiUrl = `${baseUrl}/api/Usuarios`;
 
 
 //Funcion para chequear el token, si no, no permite ver la página
-const isTokenExist = function(){
+const isTokenExist = function () {
     const token = sessionStorage.getItem("authToken");
     const userInfo = localStorage.getItem("uuid");
 
-    if(!token || !userInfo){
+    if (!token || !userInfo) {
         window.location.href = '../../../views/common/login.html';
     }
-    else{
+    else {
         return;
     }
 }
@@ -173,8 +173,8 @@ const getUsers = async () => {
                                     <td>${decodificarBase64(usuario.nombre)}</td>
                                     <td>${decodificarBase64(usuario.correo)}</td>
                                     <td>${decodificarBase64(usuario.rol) == 1 ? 'Administrador' :
-                                        decodificarBase64(usuario.rol) == 2 ? 'Gerente' :
-                                        decodificarBase64(usuario.rol) == 3 ? 'Empleado' : 'Cliente'}</td>
+                        decodificarBase64(usuario.rol) == 2 ? 'Gerente' :
+                            decodificarBase64(usuario.rol) == 3 ? 'Empleado' : 'Cliente'}</td>
                                     <td>${decodificarBase64(usuario.telefono)}</td>
                                     <td>${decodificarBase64(usuario.direccion)}</td>
                                     <td>
@@ -285,7 +285,7 @@ const userCreate = async () => {
     const direccion = document.getElementById('direccion').value;
     const clave = document.getElementById('clave').value;
 
-    if(!nombre || !correo || !rol || !telefono || !direccion || !clave){
+    if (!nombre || !correo || !rol || !telefono || !direccion || !clave) {
         alert('Todos los datos son obligatorios para crear un usuario.');
         return;
     }
@@ -346,7 +346,7 @@ const saveButtonOptions = function () {
 
 
 //Funcion para borrar datos
-const resetData = function(){
+const resetData = function () {
     document.getElementById('id_usuario').value = "";
     document.getElementById('nombre').value = "";
     document.getElementById('correo').value = "";
@@ -358,5 +358,7 @@ const resetData = function(){
 }
 
 
-isTokenExist();
-getUsers();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+    getUsers();
+});

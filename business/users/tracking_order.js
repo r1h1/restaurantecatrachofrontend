@@ -97,4 +97,6 @@ const getOrderByOrderNumber = async () => {
     }
 };
 
-isTokenExist();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+});

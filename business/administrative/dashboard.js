@@ -65,5 +65,7 @@ const printMenu = function () {
     }
 }
 
-isTokenExist();
-printMenu();
+document.addEventListener("DOMContentLoaded", function () {
+    isTokenExist();
+    printMenu();
+});
