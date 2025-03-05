@@ -1,14 +1,18 @@
+// Configuración de URLs
+const baseUrl = "https://elcatrachorestaurantes.somee.com";
+const fullApiUrl = `${baseUrl}/api/Productos`;
+
 // Función para chequear el token, si no, no permite ver la página
-const isTokenExist = function () {
+const isTokenExist = function(){
     const token = sessionStorage.getItem("authToken");
     const userInfo = localStorage.getItem("uuid");
 
-    if (!token || !userInfo) {
+    if(!token || !userInfo){
         window.location.href = '../../../views/common/login.html';
     }
 }
 
-//FUNCION PARA MOSTRAR EL MENÚ EN BASE A LOS ROLES
+//Funcion para mostrar menu
 const printMenu = function () {
     // Obtiene el token
     const token = sessionStorage.getItem("authToken");
@@ -26,7 +30,7 @@ const printMenu = function () {
         if (role == 1) {
             adminNav.innerHTML = `<ul class="navbar-nav ms-auto">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="dashboard.html">Inicio</a>
+                                        <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-white" href="modules/usuarios.html">Usuarios</a>
@@ -45,7 +49,7 @@ const printMenu = function () {
         else if (role == 3) {
             adminNav.innerHTML = `<ul class="navbar-nav ms-auto">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="dashboard.html">Inicio</a>
+                                        <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
@@ -65,5 +69,65 @@ const printMenu = function () {
     }
 }
 
-isTokenExist();
+// Función Reutilizable para Fetch (GET, DELETE)
+const makeRequestGetDelete = async (url, method) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+        return;
+    }
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+        method: method,
+        headers: myHeaders,
+        redirect: "follow"
+    };
+
+    try {
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Error en la solicitud.");
+        }
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Función Reutilizable para Fetch (POST, PUT)
+const makeRequestPostPut = async (url, method, body) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+        alert('No se procesó la solicitud, por favor, vuelve a loguearte');
+        return;
+    }
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+        method: method,
+        headers: myHeaders,
+        body: JSON.stringify(body),
+        redirect: "follow"
+    };
+
+    try {
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Error en la solicitud.");
+        }
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
 printMenu();
+isTokenExist();

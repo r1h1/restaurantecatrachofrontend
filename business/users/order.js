@@ -160,7 +160,9 @@ const orderCreated = async () => {
             estado: "1",
             fechaCreacion: new Date().toISOString(),
             fechaEntregaEstimada: new Date(pedido.fechaEntrega).toISOString(),
-            montoTotal: parseFloat(pedido.total)
+            montoTotal: parseFloat(pedido.total),
+            direccion: pedido.direccion.toString(),
+            indicaciones: pedido.indicaciones.toString()
         };
 
         const pedidoData = await makeRequestPostPutOrder(fullApiUrlPedidos, "POST", pedidoBody);
