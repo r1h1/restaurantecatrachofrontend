@@ -13,6 +13,7 @@ const isTokenExist = function(){
 }
 
 //Funcion para mostrar menu
+//Funcion para mostrar menu
 const printMenu = function () {
     // Obtiene el token
     const token = sessionStorage.getItem("authToken");
@@ -33,13 +34,13 @@ const printMenu = function () {
                                         <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/usuarios.html">Usuarios</a>
+                                        <a class="nav-link text-white" href="usuarios.html">Usuarios</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/productos.html">Productos</a>
+                                        <a class="nav-link text-white" href="productos.html">Productos</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
+                                        <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
@@ -52,7 +53,7 @@ const printMenu = function () {
                                         <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
+                                        <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
@@ -68,6 +69,7 @@ const printMenu = function () {
         alert('Surgió un error inesperado: ' + error);
     }
 }
+printMenu();
 
 
 // Función Reutilizable para Fetch (GET, DELETE)
