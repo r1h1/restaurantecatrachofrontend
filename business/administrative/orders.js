@@ -15,17 +15,20 @@ const isTokenExist = function () {
 
 //Funcion para mostrar menu
 const printMenu = function () {
-    // Obtiene el token
     const token = sessionStorage.getItem("authToken");
 
     if (!token) {
         isTokenExist();
     }
 
-    // Decodificar el token para obtener el rol
     const payload = JSON.parse(atob(token.split('.')[1]));
     const role = payload.role;
     const adminNav = document.getElementById('adminNav');
+
+    if (!adminNav) {
+        console.error("Elemento 'adminNav' no encontrado en el DOM");
+        return;
+    }
 
     try {
         if (!role) {
@@ -72,8 +75,8 @@ const printMenu = function () {
     } catch (error) {
         alert('Surgió un error inesperado: ' + error);
     }
-}
-printMenu();
+};
+
 
 // Función Reutilizable para Fetch (GET, DELETE)
 const makeRequestGetDelete = async (url, method) => {
