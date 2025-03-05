@@ -199,17 +199,25 @@ const getOrders = async () => {
 
 // Función para cambiar estado de pedido y obtener toda la fila
 const changeStatus = async (selectElement) => {
-    const fila = selectElement.closest("tr"); // Obtener la fila completa
-    const idPedido = selectElement.id.split("-")[1]; // Extraer el ID del pedido
-    const estado = selectElement.value;
+    const fila = selectElement.closest("tr");
+    const idPedido = parseInt(selectElement.id.split("-")[1]);
+    const estado = parseInt(selectElement.value);
 
-    // Obtener datos de la fila
-    const numeroPedido = fila.cells[2].textContent;
-    const fechaCreacion = fila.cells[3].textContent;
-    const fechaEntregaEstimada = fila.cells[4].textContent;
-    const montoTotal = fila.querySelector(".montoTotal").textContent;
-    const direccion = fila.cells[6].textContent;
-    const indicaciones = fila.cells[7].textContent;
+    const numeroPedido = fila.cells[1].textContent.trim();  // Corregido: antes estaba tomando una fecha
+    const fechaCreacion = fila.cells[2].textContent.trim();
+    let fechaEntregaEstimada = fila.cells[3].textContent.trim();
+    let montoTotal = fila.querySelector(".montoTotal").textContent.trim();
+    const direccion = fila.cells[5].textContent.trim();
+    let indicaciones = fila.cells[6].textContent.trim();
+
+    // Validar fechaEntregaEstimada
+    fechaEntregaEstimada = fechaEntregaEstimada ? new Date(fechaEntregaEstimada).toISOString() : null;
+
+    // Convertir montoTotal a número
+    montoTotal = parseFloat(montoTotal.replace("Q", "").trim());
+
+    // Limpiar indicaciones
+    indicaciones = indicaciones.replace(/\s+/g, " ").trim(); 
 
     try {
         const body = {
@@ -236,6 +244,7 @@ const changeStatus = async (selectElement) => {
         alert("Error al actualizar el estado del pedido: " + error);
     }
 };
+
 
 
 // Función para borrar pedido de base de datos
