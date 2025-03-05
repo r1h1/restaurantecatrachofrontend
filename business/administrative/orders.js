@@ -1,13 +1,15 @@
 // Configuración de URLs
 const baseUrl = "https://elcatrachorestaurantes.somee.com";
-const fullApiUrl = `${baseUrl}/api/Productos`;
+const fullApiUrlPedidos = `${baseUrl}/api/Pedidos`;
+const fullApiUrlDetallesPedido = `${baseUrl}/api/DetallesPedido`;
+
 
 // Función para chequear el token, si no, no permite ver la página
-const isTokenExist = function(){
+const isTokenExist = function () {
     const token = sessionStorage.getItem("authToken");
     const userInfo = localStorage.getItem("uuid");
 
-    if(!token || !userInfo){
+    if (!token || !userInfo) {
         window.location.href = '../../../views/common/login.html';
     }
 }
@@ -36,10 +38,10 @@ const printMenu = function () {
                                         <a class="nav-link text-white" href="modules/usuarios.html">Usuarios</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/productos.html">Productos</a>
+                                        <a class="nav-link text-white" href="modules/pedidos.html">pedidos</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
+                                        <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
@@ -52,7 +54,7 @@ const printMenu = function () {
                                         <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white" href="modules/pedidos.html">Pedidos</a>
+                                        <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
@@ -129,5 +131,98 @@ const makeRequestPostPut = async (url, method, body) => {
     }
 };
 
-printMenu();
+
+// Función para traer datos
+const getOrders = async () => {
+    try {
+        const data = await makeRequestGetDelete(fullApiUrlPedidos, "GET");
+
+        if (data) {
+            const tbody = document.getElementById("pedidosTabla");
+            tbody.innerHTML = ""; // Limpiar el contenido existente
+
+            data.forEach((pedido, index) => {
+                const fila = document.createElement("tr");
+                const originalDate = pedido.fechaEntregaEstimada;
+
+                // Convertir la cadena a un objeto Date
+                const dateObj = new Date(originalDate);
+
+                // Obtener los componentes de la fecha
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Meses en JS van de 0 a 11
+                const day = String(dateObj.getDate()).padStart(2, "0");
+                const hours = String(dateObj.getHours()).padStart(2, "0");
+                const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+
+                // Formato compatible con datetime-local (YYYY-MM-DDTHH:MM)
+                const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+                fila.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>
+                                        <select class="form-select" id="estadoPedido" required>
+                                            <option value="1">Creado</option>
+                                            <option value="2">Pagado</option>
+                                            <option value="3">Enviado</option>
+                                            <option value="4">Finalizado</option>
+                                        </select>
+                                    </td>
+                                    <td>${pedido.numeroPedido}</td>
+                                    <td>${pedido.fechaCreacion}</td>
+                                    <td><input type="datetime-local" class="form-control" value="${formattedDate}"></td>
+                                    <td>Q<span id="montoTotal">${pedido.montoTotal}</span></td>
+                                    <td>${pedido.direccion}</td>
+                                    <td>${pedido.indicaciones}</td>
+                                    <td>
+                                        <button class='btn btn-success btn-sm'
+                                            onclick='productDetailInfo("${pedido.numeroPedido}",${pedido.idPedido})'>Detalle</button>
+                                        <button class='btn btn-danger btn-sm'
+                                            onclick='eliminarPedido(this)'>Eliminar</button>
+                                    </td>
+                `;
+                tbody.appendChild(fila);
+            });
+        } else {
+            console.log("No hay datos de pedidos.");
+        }
+    } catch (error) {
+        alert(error);
+    }
+};
+
+// Función para mostrar el modal de confirmación de pedido
+const productDetailInfo = async (numeroPedido, idPedido) => {
+    try {
+        document.getElementById('numeroProducto').innerHTML = numeroPedido;
+
+        const data = await makeRequestGetDelete(fullApiUrlDetallesPedido + '/' + idPedido, "GET");
+
+        if (data) {
+            const tbody = document.getElementById("detallePedidoTabla");
+            tbody.innerHTML = ""; // Limpiar el contenido existente
+
+            data.forEach((detallePedido, index) => {
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>${detallePedido.nombreProducto}</td>
+                                    <td>${detallePedido.cantidad}</td>
+                                    <td>Q<span id="precioUnitario">${detallePedido.precioUnitario}</span></td>
+                `;
+                tbody.appendChild(fila);
+            });
+        } else {
+            console.log("No hay datos de pedidos.");
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById("modalDetallePedido"));
+        modal.show();
+    } catch (error) {
+        alert('No se pudo mostrar el detalle del pedido ' + numeroPedido + ': ' + error);
+    }
+};
+
 isTokenExist();
+printMenu();
+getOrders();
