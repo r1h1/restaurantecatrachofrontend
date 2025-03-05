@@ -43,21 +43,21 @@
     </nav>
 
     <!-- Contenido Principal -->
-    <div class="container d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="container-fluid d-flex flex-column align-items-center justify-content-center mt-5">
         <h4 class="mb-3 text-center">Rastrea tu pedido</h4>
 
         <!-- Input para ingresar el número de pedido -->
-        <div class="input-group mb-3 w-50">
-            <input type="text" class="form-control" id="numeroPedidoInput" placeholder="Ingrese su número de pedido">
+        <div class="input-group mb-3 w-75">
+            <input type="number" class="form-control" id="numeroPedidoInput" placeholder="Ingrese su número de pedido">
             <a class="btn btn-success" onclick="getOrderByOrderNumber()">Buscar</a>
             <a class="btn btn-warning" href="./tracking_order.html">Limpiar Busqueda</a>
         </div>
 
         <!-- Contenedor para mostrar la tarjeta del pedido -->
-        <div id="pedidoInfo" class="w-50">
-            <div class="card">
+        <div id="pedidoInfo" class="w-75">
+            <div class="card p-5">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Pedido #<span id="pedidoNumero">0</span></h5>
+                    <h5 class="card-title mb-5">Pedido #<span id="pedidoNumero">0</span></h5>
                     <p class="card-text"><strong>Estado:</strong> <span id="pedidoEstado" class="bg-light px-5 py-1">N/A</span></p>
                     <p class="card-text"><strong>Fecha de Creación:</strong> <span id="pedidoFecha">N/A</span></p>
                     <p class="card-text"><strong>Fecha Estimada de Entrega:</strong> <span id="pedidoEntrega">N/A</span></p>

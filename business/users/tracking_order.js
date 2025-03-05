@@ -4,14 +4,14 @@ const fullApiUrlPedidos = `${baseUrl}/api/Pedidos/NumeroPedido/`;
 
 
 //Funcion para chequear el token, si no, no permite ver la página
-const isTokenExist = function(){
+const isTokenExist = function () {
     const token = sessionStorage.getItem("authToken");
     const userInfo = localStorage.getItem("uuid");
 
-    if(!token || !userInfo){
+    if (!token || !userInfo) {
         window.location.href = '../../../views/common/login.html';
     }
-    else{
+    else {
         return;
     }
 }
@@ -62,12 +62,21 @@ const makeRequest = async (url, method) => {
 // Función para traer datos de usuario logueado
 const getOrderByOrderNumber = async () => {
 
-    const numeroOrden = document.getElementById('numeroPedidoInput').value;
+    const numeroOrden = document.getElementById('numeroPedidoInput').value.trim();
+
+    // Expresión regular que solo permite números enteros
+    const numeroOrdenValidacion = /^[0-9]+$/;
 
     if (!numeroOrden) {
-        alert('Debes ingresar el número de orden para buscar');
+        alert('Debes ingresar el número de orden para buscar.');
         return;
     }
+
+    if (!numeroOrdenValidacion.test(numeroOrden)) {
+        alert('El número de orden debe contener solo números.');
+        return;
+    }
+
 
     try {
         const data = await makeRequest(fullApiUrlPedidos + numeroOrden, "GET");
