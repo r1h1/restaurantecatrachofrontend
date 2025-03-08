@@ -13,7 +13,11 @@ const makeRequestPostPutOrder = async (url, method, body) => {
 
     // Agrega el token al encabezado Authorization si existe
     if (!token) {
-        alert('No se procesó la solicitud, por favor, vuelve a loguearte');
+        Swal.fire({
+            title: "Error",
+            text: "No se procesaron las solicitudes, vuelve a loguearte.",
+            icon: "error"
+        });
         return;
     }
 
@@ -75,7 +79,11 @@ const mostrarModal = function () {
     const modalFechaEntrega = document.getElementById("modalFechaEntrega");
 
     if (carritoCompras.length === 0) {
-        alert("El carrito está vacío. Agrega productos antes de confirmar el pedido.");
+        Swal.fire({
+            title: "Advertencia",
+            text: "El carrito está vacío. Agrega productos antes de confirmar el pedido.",
+            icon: "warning"
+        });
         return;
     }
 
@@ -93,13 +101,21 @@ const finalizarPedido = function () {
     const direccionEntrega = document.getElementById("direccion").value.trim();
     const indicaciones = document.getElementById("indicaciones").value.trim();
 
-    if (!direccionEntrega) {
-        alert("Por favor, ingrese una dirección de entrega.");
+    if (!direccionEntrega || !indicaciones) {
+        Swal.fire({
+            title: "Advertencia",
+            text: "Ingresa una dirección y número de teléfono para continuar.",
+            icon: "warning"
+        });
         return;
     }
 
     if (carritoCompras.length === 0) {
-        alert("El carrito está vacío. Agrega productos antes de finalizar el pedido.");
+        Swal.fire({
+            title: "Advertencia",
+            text: "El carrito está vacío. Agrega productos antes de confirmar el pedido.",
+            icon: "warning"
+        });
         return;
     }
 
@@ -117,7 +133,11 @@ const finalizarPedido = function () {
     localStorage.setItem("ultimoPedido", JSON.stringify(pedido));
 
     if (!localStorage.getItem("ultimoPedido")) {
-        alert('No se procedió con el pedido, no existe un pedido en cola.');
+        Swal.fire({
+            title: "Advertencia",
+            text: "No existe ningún pedido, por favor, crea uno para continuar.",
+            icon: "warning"
+        });
     }
 
     orderCreated();
@@ -129,7 +149,11 @@ const orderCreated = async () => {
     const pedidoJson = localStorage.getItem("ultimoPedido");
 
     if (!pedidoJson) {
-        alert('Necesitas hacer un pedido para continuar, no se encontró ningún pedido en cola.');
+        Swal.fire({
+            title: "Advertencia",
+            text: "No existe ningún pedido, por favor, crea uno para continuar.",
+            icon: "warning"
+        });
         return;
     }
 
@@ -137,17 +161,29 @@ const orderCreated = async () => {
     try {
         pedido = JSON.parse(pedidoJson);
         if (!pedido || !pedido.numeroPedido || !pedido.fechaEntrega || !pedido.total) {
-            alert('El pedido almacenado es inválido.');
+            Swal.fire({
+                title: "Advertencia",
+                text: "El pedido creado es inválido.",
+                icon: "warning"
+            });
             return;
         }
     } catch (error) {
-        alert('Error al procesar el pedido desde localStorage.');
+        Swal.fire({
+            title: "Error",
+            text: error,
+            icon: "error"
+        });
         return;
     }
 
     const encodedUserId = localStorage.getItem("uuid"); // Obtener el ID en base64
     if (!encodedUserId) {
-        alert('No se encontró un usuario válido logueado en el sistema, verifique.');
+        Swal.fire({
+            title: "Advertencia",
+            text: "No se encontró un usuario, por favor, vuelve a loguearte.",
+            icon: "warning"
+        });
         return;
     }
 
@@ -169,7 +205,11 @@ const orderCreated = async () => {
         const pedidoData = await makeRequestPostPutOrder(fullApiUrlPedidos, "POST", pedidoBody);
 
         if (!pedidoData.isSuccess) {
-            alert("No se pudo crear el pedido, verifique de nuevo.");
+            Swal.fire({
+                title: "Advertencia",
+                text: "No se pudo crear el pedido, intenta nuevamente.",
+                icon: "warning"
+            });
             return;
         }
 
@@ -179,14 +219,21 @@ const orderCreated = async () => {
 
         if (!detallesExitosos) {
             await makeReuestGetDeleteOrder(`${fullApiUrlPedidos}/${idPedido}`, "DELETE", {});
-            alert("No se pudo crear el detalle del pedido, el pedido ha sido eliminado.");
+            Swal.fire({
+                title: "Advertencia",
+                text: "No se pudo crear el detalle del pedido, el pedido fue eliminado.",
+                icon: "warning"
+            });
             return;
         }
 
         successModal(pedido.numeroPedido.toString());
     } catch (error) {
-        console.error("Error al insertar el pedido:", error);
-        alert("Error al insertar el pedido. Revisa la consola para más detalles.");
+        Swal.fire({
+            title: "Error",
+            text: error,
+            icon: "error"
+        });
     }
 };
 
@@ -226,7 +273,11 @@ const insertOrderDetails = async (pedido, idPedido) => {
         }
         return allSuccess; // Retornar si al menos un detalle falló
     } catch (error) {
-        console.error("Error al insertar los detalles del pedido:", error);
+        Swal.fire({
+            title: "Error",
+            text: error,
+            icon: "error"
+        });
         return false;
     }
 };

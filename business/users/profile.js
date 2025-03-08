@@ -78,7 +78,11 @@ const getProfile = async () => {
             return;
         }
     } catch (error) {
-        alert(error);
+        Swal.fire({
+            title: "Error",
+            text: error,
+            icon: "error"
+        });
     }
 };
 

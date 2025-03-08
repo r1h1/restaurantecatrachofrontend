@@ -10,6 +10,8 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #f8f9fa;
+    overflow: hidden; /* Evita cambios de scroll */
+    position: relative; /* Fijar la posición */
 }
 
 .login-container {

@@ -90,7 +90,11 @@ const cargarProductos = async () => {
             productList.appendChild(card);
         }
     } catch (error) {
-        alert("Error al cargar los productos: " + error);
+        Swal.fire({
+            title: "Error",
+            text: error,
+            icon: "error"
+        });
     }
 };
 

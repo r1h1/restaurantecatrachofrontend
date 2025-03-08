@@ -34,7 +34,11 @@ const authFunction = async () => {
 
     // Validación de campos vacíos
     if (!correo || !contraseña) {
-        alert("Debe ingresar su correo y contraseña.");
+        Swal.fire({
+            title: "Atención",
+            text: "Debe ingresar correo y contraseña",
+            icon: "warning"
+        });
         return;
     }
 
@@ -58,10 +62,18 @@ const authFunction = async () => {
                 window.location.href = "../../views/users/modules/compra.html";
             }
         } else {
-            alert("Usuario y/o clave incorrecta.");
+            Swal.fire({
+                title: "Atención",
+                text: "Usuario y/o contraseña incorrecta.",
+                icon: "warning"
+            });
         }
     } catch (error) {
-        alert("Usuario y/o clave incorrecta.");
+        Swal.fire({
+            title: "Error",
+            text: "Usuario y/o contraseña incorrecta",
+            icon: "error"
+        });
     }
 };
 
@@ -75,12 +87,20 @@ const changePassword = async () => {
 
     // Validaciones
     if (NuevaClave !== NuevaClaveConfirmacion) {
-        alert("La nueva contraseña no coincide con la confirmación.");
+        Swal.fire({
+            title: "Atención",
+            text: "La nueva contraseña no coincide con la confirmación.",
+            icon: "warning"
+        });
         return;
     }
 
     if (!Correo || !Telefono || !Direccion || !NuevaClave) {
-        alert("Llena todos los campos para continuar.");
+        Swal.fire({
+            title: "Atención",
+            text: "Llena todos los campos para continuar.",
+            icon: "warning"
+        });
         return;
     }
 
@@ -93,9 +113,17 @@ const changePassword = async () => {
 
     try {
         const result = await makeRequest(fullApiUrlActualizarClave, "POST", body);
-        alert("Contraseña actualizada correctamente.");
+        Swal.fire({
+            title: "Éxito",
+            text: "Contraseña actualizada correctamente.",
+            icon: "success"
+        });
         window.location.href = "../../views/common/login.html";
     } catch (error) {
-        alert("Hubo un problema al actualizar la clave: " + error);
+        Swal.fire({
+            title: "Error",
+            text: "Hubo un problema al actualizar la clave: " + error,
+            icon: "error"
+        });
     }
 };
