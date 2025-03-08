@@ -106,7 +106,7 @@ const agregarAlCarrito = function (id, nombre, precio) {
     item.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
     item.innerHTML = `
         ${nombre} - ${precio.toFixed(2)}
-        <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(this, ${precio}, ${id})">X</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(this, ${precio}, ${id})"><i class="bi bi-trash-fill"></i></button>
     `;
 
     cart.appendChild(item);
