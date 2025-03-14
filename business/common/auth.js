@@ -2,6 +2,7 @@
 const baseUrl = "https://elcatrachorestaurantes.somee.com";
 const fullApiUrl = `${baseUrl}/api/Auth`;
 const fullApiUrlActualizarClave = `${baseUrl}/api/Usuarios/ActualizarClave`;
+const fullApiUrlCrearUsuario = `${baseUrl}/api/Usuarios`;
 
 // Función Reutilizable para Fetch
 const makeRequest = async (url, method, body) => {
@@ -123,6 +124,54 @@ const changePassword = async () => {
         Swal.fire({
             title: "Error",
             text: "Hubo un problema al actualizar la clave: " + error,
+            icon: "error"
+        });
+    }
+};
+
+
+// Función para Crear Cuenta
+const createAccount = async () => {
+
+    const nombre = document.getElementById("name").value.trim();
+    const correo = document.getElementById("email").value.trim();
+    const telefono = document.getElementById("cellphone").value.trim();
+    const direccion = document.getElementById("address").value.trim();
+    const clave = document.getElementById("password").value.trim();
+
+    // Validaciones
+    if (!nombre || !correo || !telefono || !direccion || !clave) {
+        Swal.fire({
+            title: "Atención",
+            text: "Llena todos los campos para continuar.",
+            icon: "warning"
+        });
+        return;
+    }
+
+    const body = {
+        id_usuario: 0, 
+        nombre,
+        correo,
+        clave,
+        rol: "4",
+        telefono,
+        direccion
+    };
+
+    try {
+        const result = await makeRequest(fullApiUrlCrearUsuario, "POST", body);
+        Swal.fire({
+            title: "Éxito",
+            text: "Cuenta creada correctamente.",
+            icon: "success"
+        }).then(() => {
+            window.location.href = "../../views/common/login.html";
+        });
+    } catch (error) {
+        Swal.fire({
+            title: "Error",
+            text: "Hubo un problema al crear la cuenta: " + error,
             icon: "error"
         });
     }
