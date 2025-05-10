@@ -71,6 +71,9 @@ const cargarProductos = async () => {
                 card.classList.add("col-6", "mb-3");
                 card.innerHTML = `
                     <div class="card product-card p-2 text-center" onclick="agregarAlCarrito(${producto.idProducto}, '${producto.nombre}', ${producto.precio})">
+                        <div class="text-center p-4">
+                            <img src="${producto.imagenUrl}" alt="producto-imagen" width="100px">
+                        </div>
                         <h6 class="mt-2">${producto.nombre}</h6>
                         <p class="text-muted">${producto.precio.toFixed(2)}</p>
                     </div>
