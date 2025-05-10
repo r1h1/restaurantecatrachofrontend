@@ -7,21 +7,39 @@
 body {
     background-color: #f8f9fa;
 }
-img{
+
+img {
     margin-right: 10px;
 }
+
 .product-card {
     cursor: pointer;
     transition: transform 0.2s;
 }
+
 .product-card:hover {
     transform: scale(1.05);
 }
+
 .cart-list {
     height: 400px;
     overflow-y: auto;
 }
+
 .total-price {
     font-size: 1.2rem;
     font-weight: bold;
+}
+
+.scroll-productos {
+    max-height: 600px; /* Ajustable según tu diseño */
+    overflow-y: auto;
+    padding-right: 10px; /* Para evitar corte del scroll */
+}
+
+/* Para evitar que crezca de más en pantallas pequeñas */
+@media (max-width: 768px) {
+    .scroll-productos {
+        max-height: 400px;
+    }
 }
