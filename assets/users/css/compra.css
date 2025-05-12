@@ -7,24 +7,30 @@
 body {
     background-color: #f8f9fa;
 }
-img{
+
+img {
     margin-right: 10px;
 }
+
 .product-card {
     cursor: pointer;
     transition: transform 0.2s;
 }
+
 .product-card:hover {
     transform: scale(1.05);
 }
+
 .cart-list {
     height: 400px;
     overflow-y: auto;
 }
+
 .total-price {
     font-size: 1.2rem;
     font-weight: bold;
 }
+
 .category-title {
     font-size: 1.3rem;
     font-weight: bold;
@@ -34,20 +40,23 @@ img{
     border-bottom: 2px solid #dee2e6;
     padding-bottom: 0.5rem;
 }
+
 #cart-container {
     position: sticky;
     top: 100px; 
     z-index: 10;
 }
+
 .btn-group .btn {
-  width: 32px;
-  padding: 0;
+    width: 32px;
+    padding: 0;
 }
+
 .form-check {
     margin-bottom: 0.5rem;
 }
-#product-list {
-  max-height: 500px; 
-  overflow-y: auto;
-}
 
+#product-list {
+    max-height: 500px; 
+    overflow-y: auto;
+}

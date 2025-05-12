@@ -183,7 +183,7 @@ const productDelete = async (idProducto) => {
         if (!confirmDelete) {
             return; // Si el usuario cancela, no se ejecuta el DELETE
         }
-        
+
         const data = await makeRequestGetDelete(`${fullApiUrl}/${idProducto}`, "DELETE");
 
         if (data.isSuccess === true) {
