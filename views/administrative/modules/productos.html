@@ -12,96 +12,105 @@
 </head>
 
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <img src="../../../assets/common/img/ai-generated-burrito-clipart-design-illustration-free-png.webp"
-                alt="Tortilla Harina" width="40">
-            <a class="navbar-brand h2" href="#">Restaurante Donde El Catracho</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav"
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <img src="../../../assets/common/img/ai-generated-burrito-clipart-design-illustration-free-png.webp"
+             alt="Tortilla Harina" width="40">
+        <a class="navbar-brand h2" href="#">Restaurante Donde El Catracho</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav"
                 aria-controls="adminNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="adminNav">
-                <!-- menu -->
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNav">
+            <!-- menu dinámico -->
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid">
+    <div class="row mt-4">
+        <!-- Formulario -->
+        <div class="col-md-5">
+            <div class="p-4 border rounded bg-light">
+                <h4>Gestión de Productos</h4>
+                <form id="productoForm">
+                    <input type="hidden" id="id_producto">
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" rows="2" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="precio" step="0.01" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" class="form-control" id="categoria" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imagen_producto" class="form-label">Imagen Producto (URL)</label>
+                        <input type="text" class="form-control" id="imagen_producto" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="disponible" class="form-label">Disponible</label>
+                        <select class="form-select" id="disponible" required>
+                            <option value="1">Sí</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <a class="btn btn-primary" onclick="saveButtonOptions()">Guardar</a>
+                    <a class="btn btn-secondary" onclick="resetData()">Limpiar</a>
+                </form>
             </div>
         </div>
-    </nav>
 
-    <!-- Contenedor de contenido dinámico -->
-    <div class="container-fluid">
-        <div class="row mt-4">
-            <!-- Formulario de Productos -->
-            <div class="col-md-5">
-                <div class="p-4 border rounded bg-light">
-                    <h4>Gestión de Productos</h4>
-                    <form id="productoForm">
-                        <input type="hidden" id="id_producto">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="precio" class="form-label">Precio</label>
-                            <input type="number" class="form-control" id="precio" step="0.01" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoria" class="form-label">Categoría</label>
-                            <input type="text" class="form-control" id="categoria">
-                        </div>
-                         <div class="mb-3">
-                            <label for="imagen" class="form-label">Imagen Producto</label>
-                            <input type="text" class="form-control" id="imagen_producto">
-                        </div>
-                        <div class="mb-3">
-                            <label for="disponible" class="form-label">Disponible</label>
-                            <select class="form-select" id="disponible" required>
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                        <a class="btn btn-primary" onclick="saveButtonOptions()">Guardar</a>
-                        <a class="btn btn-secondary" onclick="resetData()">Limpiar</a>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Tabla de Productos -->
-            <div class="col-md-7">
-                <div class="p-4 border rounded bg-light table-responsiv">
-                    <h4>Lista de Productos</h4>
-                    <table class="table table-striped" id="productosTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Precio</th>
-                                <th>Categoría</th>
-                                <th>Disponible</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productosTabla">
-                            
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Tabla -->
+        <div class="col-md-7">
+            <div class="p-4 border rounded bg-light table-responsive">
+                <h4>Lista de Productos</h4>
+                <table class="table table-striped" id="productosTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Categoría</th>
+                        <th>Disponible</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productosTabla">
+                    <!-- contenido dinámico -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <script src="../../../business/administrative/products.js"></script>
-    <script>
-        const closeSession = function () {
-            localStorage.removeItem("uuid");
-            sessionStorage.removeItem("authToken");
-            window.location.href = "../../../views/common/login.html";
-        }
-    </script>
+</div>
+
+<!-- Scripts -->
+<script src="../../../business/administrative/products.js"></script>
+<script>
+    const closeSession = function () {
+        localStorage.removeItem("uuid");
+        sessionStorage.removeItem("authToken");
+        window.location.href = "../../../views/common/login.html";
+    }
+</script>
 </body>
 
 </html>
