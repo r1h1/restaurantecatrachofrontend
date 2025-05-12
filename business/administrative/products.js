@@ -1,6 +1,6 @@
 // Configuración de URLs
 const baseUrl = "https://elcatrachorestaurantes.somee.com";
-const fullApiUrl = `${baseUrl}/api/Productos`;
+const fullApiUrl = ${baseUrl}/api/Productos;
 
 // Función para chequear el token, si no, no permite ver la página
 const isTokenExist = function(){
@@ -81,7 +81,7 @@ const makeRequestGetDelete = async (url, method) => {
     if (!token) {
         return;
     }
-    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Authorization", Bearer ${token});
 
     const requestOptions = {
         method: method,
@@ -111,7 +111,7 @@ const makeRequestPostPut = async (url, method, body) => {
         alert('No se procesó la solicitud, por favor, vuelve a loguearte');
         return;
     }
-    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Authorization", Bearer ${token});
 
     const requestOptions = {
         method: method,
@@ -159,7 +159,8 @@ const getProducts = async () => {
                                 "${producto.descripcion}", 
                                 ${producto.precio}, 
                                 "${producto.categoria}",
-                                ${producto.disponible}
+                                ${producto.disponible},
+                                "${producto.imagenUrl}" 
                             )'>Editar</button>
                         <button class='btn btn-danger btn-sm' onclick='productDelete(${producto.idProducto})'>Eliminar</button>
                     </td>
@@ -182,8 +183,8 @@ const productDelete = async (idProducto) => {
         if (!confirmDelete) {
             return; // Si el usuario cancela, no se ejecuta el DELETE
         }
-        
-        const data = await makeRequestGetDelete(`${fullApiUrl}/${idProducto}`, "DELETE");
+
+        const data = await makeRequestGetDelete(${fullApiUrl}/${idProducto}, "DELETE");
 
         if (data.isSuccess === true) {
             getProducts();
@@ -198,13 +199,14 @@ const productDelete = async (idProducto) => {
 };
 
 // Función para editar productos
-const productEdit = function (idProducto, nombre, descripcion, precio, categoria, disponible) {
+const productEdit = function (idProducto, nombre, descripcion, precio, categoria, disponible, imagenUrl) {
     document.getElementById('id_producto').value = idProducto;
     document.getElementById('nombre').value = nombre;
     document.getElementById('descripcion').value = descripcion;
     document.getElementById('precio').value = precio;
     document.getElementById('categoria').value = categoria;
     document.getElementById('disponible').checked = disponible;
+    document.getElementById('imagen_producto').value = imagenUrl;
 };
 
 // Función para actualizar producto
@@ -248,9 +250,10 @@ const productCreate = async () => {
     const descripcion = document.getElementById('descripcion').value;
     const precio = parseFloat(document.getElementById('precio').value);
     const categoria = document.getElementById('categoria').value;
+    const imagenUrl = document.getElementById('imagen_producto').value;
     const disponible = document.getElementById('disponible').checked;
 
-    if(!nombre || !descripcion || !precio || !categoria){
+    if(!nombre || !descripcion || !precio || !categoria|| !imagenUrl){
         alert('Todos los datos son obligatorios para crear un producto.');
         return;
     }
@@ -262,6 +265,7 @@ const productCreate = async () => {
             descripcion,
             precio,
             categoria,
+            imagenUrl,
             disponible
         };
 
