@@ -103,7 +103,6 @@ const cargarProductos = async () => {
 
                 productList.appendChild(fila);
             }
-
         } else {
             productList.innerHTML = "";
             const card = document.createElement("div");
@@ -161,26 +160,46 @@ const agregarAlCarrito = function (id, nombre, precio) {
             </div>
         `;
         cart.appendChild(item);
+
         Swal.fire({
-         toast: true,
-         position: 'top-end',
-         icon: 'success',
-         title: 'Producto agregado al carrito',
-         showConfirmButton: false,
-         timer: 1200
-});
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 1200
+        });
     }
 
     total += precio;
     totalElement.textContent = `${total.toFixed(2)}`;
     actualizarBotonConfirmar();
+};
 
+const cambiarCantidad = function (id, cambio) {
+    const totalElement = document.getElementById("total");
+
+    const producto = carritoCompras.find(p => p.id === id);
+    if (!producto) return;
+
+    producto.cantidad += cambio;
+
+    if (producto.cantidad <= 0) {
+        carritoCompras = carritoCompras.filter(p => p.id !== id);
+        document.getElementById(`item-${id}`).remove();
+    } else {
+        const itemDOM = document.getElementById(`item-${id}`);
+        itemDOM.querySelector(".cantidad").textContent = `x${producto.cantidad}`;
+        itemDOM.querySelector(".subtotal").textContent = `Subtotal: Q${(producto.precio * producto.cantidad).toFixed(2)}`;
+    }
+
+    total = carritoCompras.reduce((acc, p) => acc + (p.precio * p.cantidad), 0);
+    totalElement.textContent = `${total.toFixed(2)}`;
+    actualizarBotonConfirmar();
 };
 
 const resetMetodoPago = function () {
-
     document.getElementById("pagoEfectivo").checked = true;
- 
     document.getElementById("infoTarjeta").classList.add("d-none");
     document.getElementById("infoBitcoin").classList.add("d-none");
 
@@ -190,47 +209,20 @@ const resetMetodoPago = function () {
     document.getElementById("numeroTarjeta").value = "";
     document.getElementById("fechaExp").value = "";
     document.getElementById("cvv").value = "";
-
 };
 
-
-
-
-const cambiarCantidad = function (id, cambio) {
-    const totalElement = document.getElementById("total");
-
-    const producto = carritoCompras.find(p => p.id === id);
-    if (!producto) return;
-
-    // Sumar o restar cantidad
-    producto.cantidad += cambio;
-
-    // Si baja a 0 o menos, eliminar
-    if (producto.cantidad <= 0) {
-        carritoCompras = carritoCompras.filter(p => p.id !== id);
-        document.getElementById(`item-${id}`).remove();
-    } else {
-        // Actualizar cantidad y subtotal
-        const itemDOM = document.getElementById(`item-${id}`);
-        itemDOM.querySelector(".cantidad").textContent = `x${producto.cantidad}`;
-        itemDOM.querySelector(".subtotal").textContent = `Subtotal: Q${(producto.precio * producto.cantidad).toFixed(2)}`;
-    }
-
-    // Recalcular total
-    total = carritoCompras.reduce((acc, p) => acc + (p.precio * p.cantidad), 0);
-    totalElement.textContent = `${total.toFixed(2)}`;
-    actualizarBotonConfirmar();
+const actualizarBotonConfirmar = function () {
+    const btn = document.getElementById("btnConfirmar");
+    btn.disabled = carritoCompras.length === 0;
 };
-
-
-
 
 // Inicializar la carga de productos
 document.addEventListener("DOMContentLoaded", function () {
     isTokenExist();
     cargarProductos();
-     actualizarBotonConfirmar(); 
-     const metodoPagoInputs = document.querySelectorAll('input[name="metodoPago"]');
+    actualizarBotonConfirmar();
+
+    const metodoPagoInputs = document.querySelectorAll('input[name="metodoPago"]');
     const infoTarjeta = document.getElementById("infoTarjeta");
     const infoBitcoin = document.getElementById("infoBitcoin");
 
@@ -247,32 +239,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-     document.getElementById("numeroTarjeta").addEventListener("input", function () {
-    this.value = this.value
-        .replace(/\D/g, "")               
-        .substring(0, 16)                
-        .replace(/(.{4})/g, "$1 ")       
-        .trim();
-});
+    document.getElementById("numeroTarjeta").addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").substring(0, 16).replace(/(.{4})/g, "$1 ").trim();
+    });
 
     document.getElementById("cvv").addEventListener("input", function () {
         this.value = this.value.replace(/\D/g, "").slice(0, 3);
     });
 
-  document.getElementById("fechaExp").addEventListener("input", function () {
-    let input = this.value.replace(/[^\d]/g, "");
-    if (input.length >= 3) {
-        input = input.substring(0, 2) + "/" + input.substring(2, 4);
-    }
-    this.value = input.substring(0, 5);
+    document.getElementById("fechaExp").addEventListener("input", function () {
+        let input = this.value.replace(/[^\d]/g, "");
+        if (input.length >= 3) {
+            input = input.substring(0, 2) + "/" + input.substring(2, 4);
+        }
+        this.value = input.substring(0, 5);
+    });
 });
-
-    
-});
-
-const actualizarBotonConfirmar = function () {
-    const btn = document.getElementById("btnConfirmar");
-    btn.disabled = carritoCompras.length === 0;
-};
-
-
