@@ -248,9 +248,10 @@ const productCreate = async () => {
     const descripcion = document.getElementById('descripcion').value;
     const precio = parseFloat(document.getElementById('precio').value);
     const categoria = document.getElementById('categoria').value;
+    const imagenUrl = document.getElementById('imagen_producto').value;
     const disponible = document.getElementById('disponible').checked;
 
-    if(!nombre || !descripcion || !precio || !categoria){
+    if(!nombre || !descripcion || !precio || !categoria|| !imagenUrl){
         alert('Todos los datos son obligatorios para crear un producto.');
         return;
     }
@@ -262,6 +263,7 @@ const productCreate = async () => {
             descripcion,
             precio,
             categoria,
+            imagenUrl,
             disponible
         };
 

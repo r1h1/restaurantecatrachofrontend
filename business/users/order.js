@@ -119,6 +119,38 @@ const finalizarPedido = function () {
         return;
     }
 
+    const metodo = document.querySelector('input[name="metodoPago"]:checked').value;
+
+    // Validaciones de método de pago
+    if (metodo === "Tarjeta") {
+        const nombre = document.getElementById("nombreTarjeta").value.trim();
+        const numero = document.getElementById("numeroTarjeta").value.replace(/\s/g, "");
+        const fecha = document.getElementById("fechaExp").value.trim();
+        const cvv = document.getElementById("cvv").value.trim();
+
+       if (!nombre || numero.length !== 16 || !/^\d{2}\/\d{2}$/.test(fecha) || !/^\d{3,4}$/.test(cvv)) {
+
+            Swal.fire({
+                icon: "warning",
+                title: "Datos inválidos",
+                text: "Revisa que los datos de la tarjeta estén completos y correctos."
+            });
+            return;
+        }
+    }
+
+    if (metodo === "Bitcoin") {
+        const wallet = document.getElementById("walletId").value.trim();
+        if (!wallet) {
+            Swal.fire({
+                icon: "warning",
+                title: "Falta Wallet ID",
+                text: "Debes ingresar tu Wallet ID para pagar con Bitcoin."
+            });
+            return;
+        }
+    }
+
     const pedido = {
         numeroPedido: Math.floor(100000 + Math.random() * 900000),
         productos: carritoCompras,
@@ -129,7 +161,6 @@ const finalizarPedido = function () {
         indicaciones: indicaciones || "N/A"
     };
 
-    // Guardar el pedido en LocalStorage
     localStorage.setItem("ultimoPedido", JSON.stringify(pedido));
 
     if (!localStorage.getItem("ultimoPedido")) {
@@ -142,6 +173,7 @@ const finalizarPedido = function () {
 
     orderCreated();
 };
+
 
 
 // Función para insertar el pedido y sus detalles en una transacción simulada
@@ -305,4 +337,6 @@ const reset = function () {
     document.getElementById("total").textContent = "0.00";
     document.getElementById("direccion").value = "";
     document.getElementById("indicaciones").value = "";
+    actualizarBotonConfirmar();
+    actualizarBotonConfirmar();
 };

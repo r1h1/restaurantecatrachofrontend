@@ -43,7 +43,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm" id="cart-container">
                     <div class="card-header bg-secondary shadow text-white text-center">
                         <h5 class="mb-0">Carrito de Compras</h5>
                     </div>
@@ -51,7 +51,8 @@
                         <ul class="list-group cart-list" id="cart"></ul>
                         <div class="mt-3 text-center">
                             <p class="fw-bold h4 mb-4">Total: Q<span id="total">0.00</span></p>
-                            <button class="btn btn-light shadow w-100" onclick="mostrarModal()">Confirmar Pedido</button>
+                            <button id="btnConfirmar" class="btn btn-light shadow w-100" onclick="mostrarModal()">Confirmar Pedido</button>
+
                         </div>
                     </div>
                 </div>
@@ -63,30 +64,74 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmación -->
-    <div class="modal fade" id="modalConfirmacion">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-light shadow-sm text-dark">
-                    <h5 class="modal-title text-secondary">Confirmar Pedido</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="modalConfirmacion">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light shadow-sm text-dark">
+                <h5 class="modal-title text-secondary">Confirmar Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Total del pedido: <span class="fw-bold">Q</span><span id="modalTotal" class="fw-bold"></span></p>
+                <p>Fecha de creación: <span id="modalFechaCreacion" class="fw-bold"></span></p>
+                <p>Fecha estimada de entrega: <span id="modalFechaEntrega" class="fw-bold"></span></p>
+
+                <label class="form-label mt-2">Dirección de entrega</label>
+                <input type="text" class="form-control" id="direccion" placeholder="Ingrese su dirección">
+
+                <label class="form-label mt-2">Número de teléfono</label>
+                <input type="tel" class="form-control" id="indicaciones" placeholder="Ingrese su número">
+
+                <div class="mt-3">
+                    <label class="form-label">Método de pago</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="metodoPago" id="pagoEfectivo" value="Efectivo" checked>
+                        <label class="form-check-label" for="pagoEfectivo">Efectivo</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="metodoPago" id="pagoTarjeta" value="Tarjeta">
+                        <label class="form-check-label" for="pagoTarjeta">Tarjeta de crédito/débito</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="metodoPago" id="pagoBitcoin" value="Bitcoin">
+                        <label class="form-check-label" for="pagoBitcoin">Bitcoin</label>
+                    </div>
+
+                   <div id="infoTarjeta" class="mt-3 d-none">
+    <label class="form-label">Nombre en la tarjeta</label>
+    <input type="text" class="form-control mb-2" id="nombreTarjeta" placeholder="Ej. Juan Pérez">
+
+    <label class="form-label">Número de tarjeta</label>
+    <input type="text" class="form-control mb-2" id="numeroTarjeta" placeholder="1234 5678 9012 3456" maxlength="19">
+
+    <div class="row">
+        <div class="col-6">
+            <label class="form-label">Fecha exp.</label>
+            <input type="text" class="form-control" id="fechaExp" placeholder="MM/AA" maxlength="5">
+        </div>
+        <div class="col-6">
+            <label class="form-label">CVV</label>
+            <input type="text" class="form-control" id="cvv" placeholder="123 o 1234" maxlength="4">
+        </div>
+    </div>
+</div>
+                    <div id="infoBitcoin" class="mt-2 d-none">
+                        <label class="form-label">Wallet ID</label>
+                        <input type="text" class="form-control" id="walletId" placeholder="Ingrese su wallet BTC">
+
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Total del pedido: <span class="fw-bold">Q</span><span id="modalTotal" class="fw-bold"></span></p>
-                    <p>Fecha de creación: <span id="modalFechaCreacion" class="fw-bold"></span></p>
-                    <p>Fecha estimada de entrega: <span id="modalFechaEntrega" class="fw-bold"></span></p>
-                    <label class="form-label mt-2">Dirección de entrega</label>
-                    <input type="text" class="form-control" id="direccion" placeholder="Ingrese su dirección">
-                    <label class="form-label mt-2">Número de teléfono</label>
-                    <input type="number" class="form-control" id="indicaciones" placeholder="Ingrese su número">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="reset()">Cancelar</button>
-                    <button class="btn btn-secondary" onclick="finalizarPedido()">Finalizar Pedido</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="reset()">Cancelar</button>
+                <button class="btn btn-secondary" onclick="finalizarPedido()">Finalizar Pedido</button>
             </div>
         </div>
     </div>
+</div>
+
 
 
     <!-- Modal de Éxito -->
