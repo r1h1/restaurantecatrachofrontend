@@ -19,9 +19,35 @@ const printMenu = function () {
     const adminNav = document.getElementById('adminNav');
 
     if (role == 1) {
-        adminNav.innerHTML = `...`; // omitido por brevedad
+        adminNav.innerHTML = `<ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="usuarios.html">Usuarios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="productos.html">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
+            </li>
+        </ul>`;
     } else if (role == 3) {
-        adminNav.innerHTML = `...`; // omitido por brevedad
+        adminNav.innerHTML = `<ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="../dashboard.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="pedidos.html">Pedidos</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-danger" onclick="closeSession()">Cerrar Sesión</a>
+            </li>
+        </ul>`;
     } else {
         sessionStorage.clear();
         window.location.href = '../../../views/common/login.html';
