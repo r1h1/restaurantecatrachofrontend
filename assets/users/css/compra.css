@@ -31,15 +31,32 @@ img {
     font-weight: bold;
 }
 
-.scroll-productos {
-    max-height: 600px; /* Ajustable según tu diseño */
-    overflow-y: auto;
-    padding-right: 10px; /* Para evitar corte del scroll */
+.category-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.5rem;
 }
 
-/* Para evitar que crezca de más en pantallas pequeñas */
-@media (max-width: 768px) {
-    .scroll-productos {
-        max-height: 400px;
-    }
+#cart-container {
+    position: sticky;
+    top: 100px; 
+    z-index: 10;
+}
+
+.btn-group .btn {
+    width: 32px;
+    padding: 0;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+#product-list {
+    max-height: 500px; 
+    overflow-y: auto;
 }
