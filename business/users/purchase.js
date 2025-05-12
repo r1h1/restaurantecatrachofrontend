@@ -21,7 +21,6 @@ const closeSession = function () {
     localStorage.removeItem("uuid");
     sessionStorage.removeItem("authToken");
     localStorage.removeItem("ultimoPedido");
-    // Reiniciar el carrito
     carritoCompras = [];
     document.getElementById("cart").innerHTML = "";
     total = 0;
@@ -35,9 +34,7 @@ const makeReuestGetDelete = async (url, method) => {
     myHeaders.append("Content-Type", "application/json");
 
     const token = sessionStorage.getItem("authToken");
-    if (!token) {
-        return;
-    }
+    if (!token) return;
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     const reuestOptions = {
@@ -58,38 +55,60 @@ const makeReuestGetDelete = async (url, method) => {
     }
 };
 
-// Función para obtener productos y cargarlos en la interfaz
+// Función mejorada para cargar productos y agrupar por categoría
 const cargarProductos = async () => {
     const productList = document.getElementById("product-list");
     try {
         const productos = await makeReuestGetDelete(fullApiUrlProductos, "GET");
-        if (productos.length > 0) {  // Se corrige "lenght" por "length"
-            productList.innerHTML = ""; // Limpiar la lista antes de cargar productos
 
-            productos.forEach(producto => {
-                const card = document.createElement("div");
-                card.classList.add("col-6", "mb-3");
-                card.innerHTML = `
-                    <div class="card product-card p-2 text-center" onclick="agregarAlCarrito(${producto.idProducto}, '${producto.nombre}', ${producto.precio})">
-                        <div class="text-center p-4">
-                            <img src="${producto.imagenUrl}" alt="producto-imagen" width="100px">
-                        </div>
-                        <h6 class="mt-2">${producto.nombre}</h6>
-                        <p class="text-muted">${producto.precio.toFixed(2)}</p>
-                    </div>
-                `;
-                productList.appendChild(card);
+        if (productos.length > 0) {
+            productList.innerHTML = "";
+
+            const categorias = {};
+            productos.forEach(p => {
+                if (!categorias[p.categoria]) {
+                    categorias[p.categoria] = [];
+                }
+                categorias[p.categoria].push(p);
             });
+
+            for (const categoria in categorias) {
+                const titulo = document.createElement("h4");
+                titulo.classList.add("category-title");
+                titulo.textContent = `Nuestros ${categoria}`;
+                productList.appendChild(titulo);
+
+                const fila = document.createElement("div");
+                fila.classList.add("row", "mb-4");
+
+                categorias[categoria].forEach(producto => {
+                    const card = document.createElement("div");
+                    card.classList.add("col-md-4", "mb-3");
+                    card.innerHTML = `
+                        <div class="card h-100 p-2 text-center product-card" onclick="agregarAlCarrito(${producto.idProducto}, '${producto.nombre}', ${producto.precio})">
+                            <img src="${producto.imagenUrl}" class="card-img-top img-fluid" alt="${producto.nombre}" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h6 class="card-title">${producto.nombre}</h6>
+                                <p class="card-text text-muted">Q${producto.precio.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                    fila.appendChild(card);
+                });
+
+                productList.appendChild(fila);
+            }
+
         } else {
-            productList.innerHTML = ""; // Limpiar la lista antes de cargar productos
+            productList.innerHTML = "";
             const card = document.createElement("div");
             card.classList.add("col-12", "mb-3");
             card.innerHTML = `
-                    <div class="card p-2 text-center">
-                        <h6 class="mt-2">-- NO HAY PRODUCTOS DISPONIBLES --</h6>
-                        <p class="text-muted">Vuelve pronto, gracias por confiar en Donde El Catracho</p>
-                    </div>
-                `;
+                <div class="card p-2 text-center">
+                    <h6 class="mt-2">-- NO HAY PRODUCTOS DISPONIBLES --</h6>
+                    <p class="text-muted">Vuelve pronto, gracias por confiar en Donde El Catracho</p>
+                </div>
+            `;
             productList.appendChild(card);
         }
     } catch (error) {
@@ -107,7 +126,7 @@ const agregarAlCarrito = function (id, nombre, precio) {
     const totalElement = document.getElementById("total");
 
     const producto = { id, nombre, precio };
-    carritoCompras.push(producto); // Agregar al array de compras
+    carritoCompras.push(producto);
 
     const item = document.createElement("li");
     item.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
@@ -118,7 +137,6 @@ const agregarAlCarrito = function (id, nombre, precio) {
 
     cart.appendChild(item);
 
-    // Actualizar total global
     total += precio;
     totalElement.textContent = `${total.toFixed(2)}`;
 };
@@ -127,22 +145,18 @@ const agregarAlCarrito = function (id, nombre, precio) {
 const eliminarDelCarrito = function (elemento, precio, id) {
     const totalElement = document.getElementById("total");
 
-    // Eliminar del DOM
     elemento.parentElement.remove();
 
-    // Eliminar del array carritoCompras
     const index = carritoCompras.findIndex(producto => producto.id === id);
     if (index !== -1) {
-        carritoCompras.splice(index, 1); // Eliminar producto
-        total -= precio; // Restar al total
+        carritoCompras.splice(index, 1);
+        total -= precio;
     }
 
-    // Actualizar total en pantalla
     totalElement.textContent = `${total.toFixed(2)}`;
 };
 
-
-// Inicializar la carga de productos
+// Inicializar
 document.addEventListener("DOMContentLoaded", function () {
     isTokenExist();
     cargarProductos();
