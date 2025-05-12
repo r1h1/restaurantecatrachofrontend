@@ -159,7 +159,8 @@ const getProducts = async () => {
                                 "${producto.descripcion}", 
                                 ${producto.precio}, 
                                 "${producto.categoria}",
-                                ${producto.disponible}
+                                ${producto.disponible},
+                                "${producto.imagenUrl}" 
                             )'>Editar</button>
                         <button class='btn btn-danger btn-sm' onclick='productDelete(${producto.idProducto})'>Eliminar</button>
                     </td>
@@ -198,13 +199,14 @@ const productDelete = async (idProducto) => {
 };
 
 // Función para editar productos
-const productEdit = function (idProducto, nombre, descripcion, precio, categoria, disponible) {
+const productEdit = function (idProducto, nombre, descripcion, precio, categoria, disponible, imagenUrl) {
     document.getElementById('id_producto').value = idProducto;
     document.getElementById('nombre').value = nombre;
     document.getElementById('descripcion').value = descripcion;
     document.getElementById('precio').value = precio;
     document.getElementById('categoria').value = categoria;
     document.getElementById('disponible').checked = disponible;
+    document.getElementById('imagen_producto').value = imagenUrl;
 };
 
 // Función para actualizar producto
