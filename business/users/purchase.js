@@ -122,38 +122,65 @@ const cargarProductos = async () => {
 
 // Agregar productos al carrito
 const agregarAlCarrito = function (id, nombre, precio) {
-    const cart = document.getElementById("cart");
-    const totalElement = document.getElementById("total");
-
-    const producto = { id, nombre, precio };
-    carritoCompras.push(producto);
-
-    const item = document.createElement("li");
-    item.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
-    item.innerHTML = `
-        ${nombre} - ${precio.toFixed(2)}
-        <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(this, ${precio}, ${id})"><i class="bi bi-trash-fill"></i></button>
-    `;
-
-    cart.appendChild(item);
-
-    total += precio;
-    totalElement.textContent = `${total.toFixed(2)}`;
-};
-
-// Eliminar productos del carrito
-const eliminarDelCarrito = function (elemento, precio, id) {
-    const totalElement = document.getElementById("total");
-
-    elemento.parentElement.remove();
-
-    const index = carritoCompras.findIndex(producto => producto.id === id);
+    const index = carritoCompras.findIndex(p => p.id === id);
     if (index !== -1) {
-        carritoCompras.splice(index, 1);
-        total -= precio;
+        carritoCompras[index].cantidad += 1;
+    } else {
+        carritoCompras.push({ id, nombre, precio, cantidad: 1 });
     }
 
-    totalElement.textContent = `${total.toFixed(2)}`;
+    total += precio;
+    renderizarCarrito();
+};
+
+// Renderizar el carrito agrupado
+const renderizarCarrito = () => {
+    const cart = document.getElementById("cart");
+    const totalElement = document.getElementById("total");
+    cart.innerHTML = "";
+
+    carritoCompras.forEach(producto => {
+        const item = document.createElement("li");
+        item.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+        item.innerHTML = `
+            <div>
+                ${producto.nombre} x${producto.cantidad} - Q${(producto.precio * producto.cantidad).toFixed(2)}
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary btn-sm" onclick="modificarCantidad(${producto.id}, -1)">-</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="modificarCantidad(${producto.id}, 1)">+</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})"><i class="bi bi-trash-fill"></i></button>
+            </div>
+        `;
+        cart.appendChild(item);
+    });
+
+    totalElement.textContent = total.toFixed(2);
+};
+
+// Modificar cantidad
+const modificarCantidad = (id, cambio) => {
+    const index = carritoCompras.findIndex(p => p.id === id);
+    if (index !== -1) {
+        carritoCompras[index].cantidad += cambio;
+        total += carritoCompras[index].precio * cambio;
+
+        if (carritoCompras[index].cantidad <= 0) {
+            total -= carritoCompras[index].precio; // restar extra por última unidad
+            carritoCompras.splice(index, 1);
+        }
+        renderizarCarrito();
+    }
+};
+
+// Eliminar producto completamente
+const eliminarProducto = (id) => {
+    const index = carritoCompras.findIndex(p => p.id === id);
+    if (index !== -1) {
+        total -= carritoCompras[index].precio * carritoCompras[index].cantidad;
+        carritoCompras.splice(index, 1);
+        renderizarCarrito();
+    }
 };
 
 // Inicializar
